@@ -3,6 +3,8 @@ package com.solvd.booksyapp.daos.mySQLImpl;
 import com.solvd.booksyapp.daos.IUserDAO;
 import com.solvd.booksyapp.models.User;
 import com.solvd.booksyapp.services.ConnectionPool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
+    private static final Logger logger = LogManager.getLogger(UserDAO.class.getName());
 
     @Override
     public User getUserByFullName(String firstName, String lastName) {
@@ -29,7 +32,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            logger.error("Error getting user with full name: {} {}", firstName, lastName, ex);
         }
         return null;
     }
@@ -49,7 +52,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            logger.error("Error getting user with email: {}", email, ex);
         }
         return null;
     }
@@ -58,6 +61,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
     public List<User> getByRoleId(Long roleId) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM Users WHERE role_id = ?";
+
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -67,8 +71,8 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 users.add(getMappedUser(resultSet));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            logger.error("Error getting users with role_id: {}", roleId, ex);
         }
         return users;
     }
@@ -88,14 +92,15 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            logger.error("Error getting user with id: {}", id, ex);
         }
         return null;
     }
 
     @Override
     public User save(User entity) {
-        String sql = "INSERT INTO users (first_name, last_name, email, phone, password, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (first_name, last_name, email, phone, password, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -105,16 +110,50 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
             statement.setString(4, entity.getPhone());
             statement.setString(5, entity.getPassword());
             statement.setLong(6, entity.getRoleId());
-            statement.executeUpdate();
+
+            if (statement.executeUpdate() == 0) {
+                throw new IllegalStateException("Saving user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    entity.setId(generatedKeys.getLong(1));
+                }
+            }
+            return entity;
         }
         catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error("Error saving user: {}", entity, ex);
         }
         return null;
     }
 
     @Override
     public User update(User entity) {
+        String sql = "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ?, password = ?, role_id = ? WHERE id = ?";
+
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, entity.getFirstName());
+            statement.setString(2, entity.getLastName());
+            statement.setString(3, entity.getEmail());
+            statement.setString(4, entity.getPhone());
+            statement.setString(5, entity.getPassword());
+            statement.setLong(6, entity.getRoleId());
+            statement.setLong(7, entity.getId());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new IllegalStateException("Update failed, no user found with id: " + entity.getId());
+            }
+
+            return entity;
+
+        } catch (SQLException ex) {
+            logger.error("Error updating user with id {}: {}", entity.getId(), ex);
+        }
         return null;
     }
 
@@ -127,8 +166,8 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
 
             statement.setLong(1, id);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            logger.error("Error removing user with id: {}", id, ex);
         }
     }
 
