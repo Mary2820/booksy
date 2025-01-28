@@ -13,18 +13,34 @@ import java.util.List;
 
 public class ReviewDAO implements IReviewDAO {
     private static final Logger logger = LogManager.getLogger(ReviewDAO.class.getName());
+    private static final String GET_BY_CLIENT_ID = 
+        "SELECT * FROM Reviews r " +
+        "LEFT JOIN Appointments a ON r.appointment_id = a.id " +
+        "WHERE a.client_id = ?";
+    private static final String GET_BY_EMPLOYEE_ID = 
+        "SELECT * FROM Reviews r " +
+        "LEFT JOIN Appointments a ON r.appointment_id = a.id " +
+        "WHERE a.employee_id = ?";
+    private static final String GET_AVG_RATING_BY_EMPLOYEE = 
+        "SELECT AVG(r.rating) AS average_rating FROM Reviews r " +
+        "LEFT JOIN Appointments a ON r.appointment_id = a.id " +
+        "WHERE a.employee_id = ?";
+    private static final String GET_AVG_RATING_BY_BUSINESS = 
+        "SELECT AVG(r.rating) AS average_rating FROM Reviews r " +
+        "LEFT JOIN Appointments a ON r.appointment_id = a.id " +
+        "LEFT JOIN Clients c ON a.client_id = c.id " +
+        "WHERE c.business_id = ?";
+    private static final String GET_BY_ID = "SELECT * FROM Reviews WHERE id = ?";
+    private static final String SAVE = "INSERT INTO Reviews (appointment_id, rating, comment, created_at) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Reviews SET rating = ?, comment = ? WHERE id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Reviews WHERE id = ?";
 
     @Override
     public List<Review> getByClientId(Long clientId) {
-        String sql = " SELECT * FROM Reviews r" +
-                " LEFT JOIN Appointments a" +
-                " ON r.appointment_id = a.id" +
-                " WHERE a.client_id = ?";
         List<Review> reviews = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_CLIENT_ID)) {
             statement.setLong(1, clientId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -32,25 +48,20 @@ public class ReviewDAO implements IReviewDAO {
                     reviews.add(getMappedReview(resultSet));
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error fetching reviews for client with ID {} : {}", clientId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
-
         return reviews;
     }
 
     @Override
     public List<Review> getByEmployeeId(Long employeeId) {
-        String sql = " SELECT * FROM Reviews r" +
-                " LEFT JOIN Appointments a" +
-                " ON r.appointment_id = a.id" +
-                " WHERE a.employee_id = ?";
         List<Review> reviews = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_EMPLOYEE_ID)) {
             statement.setLong(1, employeeId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -58,23 +69,19 @@ public class ReviewDAO implements IReviewDAO {
                     reviews.add(getMappedReview(resultSet));
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error fetching reviews for employee with ID {} : {}", employeeId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
-
         return reviews;
     }
 
     @Override
     public BigDecimal getAverageRatingByEmployeeId(Long employeeId) {
-        String sql = " SELECT AVG(r.rating) AS average_rating FROM Reviews r" +
-        " LEFT JOIN Appointments a ON r.appointment_id = a.id" +
-        " WHERE a.employee_id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_AVG_RATING_BY_EMPLOYEE)) {
             statement.setLong(1, employeeId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -85,20 +92,17 @@ public class ReviewDAO implements IReviewDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error fetching average rating for employee with ID {} : {}", employeeId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return BigDecimal.ZERO;
     }
 
     @Override
     public BigDecimal getAverageRatingByBusinessId(Long businessId) {
-        String sql = "SELECT AVG(r.rating) AS average_rating FROM Reviews r" +
-        " LEFT JOIN Appointments a ON r.appointment_id = a.id" +
-        " LEFT JOIN Clients c ON a.client_id = c.id" +
-        " WHERE c.business_id = ? ";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_AVG_RATING_BY_BUSINESS)) {
             statement.setLong(1, businessId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -107,21 +111,19 @@ public class ReviewDAO implements IReviewDAO {
                     return averageRating != null ? averageRating : BigDecimal.ZERO;
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error fetching average rating for business with ID {} : {}", businessId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
-
         return BigDecimal.ZERO;
     }
 
     @Override
     public Review getById(Long id) {
-        String sql = "SELECT * FROM Reviews WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
             statement.setLong(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -131,22 +133,21 @@ public class ReviewDAO implements IReviewDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error getting review with id {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Review save(Review entity) {
-        String sql = "INSERT INTO Reviews (appointment_id, rating, comment, created_at) VALUES (?, ?, ?, ?)";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
             statement.setLong(1, entity.getAppointmentId());
             statement.setBigDecimal(2, entity.getRating());
             statement.setString(3, entity.getComment());
             statement.setTimestamp(4, Timestamp.valueOf(entity.getCreatedAt()));
-
 
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Saving review failed, no rows affected.");
@@ -158,20 +159,19 @@ public class ReviewDAO implements IReviewDAO {
                 }
             }
             return entity;
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("Error saving review {} : {}", entity, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Review update(Review entity) {
-        String sql = "UPDATE Reviews SET rating = ?, comment = ? WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setBigDecimal(1, entity.getRating());
             statement.setString(2, entity.getComment());
             statement.setLong(3, entity.getId());
@@ -183,24 +183,25 @@ public class ReviewDAO implements IReviewDAO {
             }
 
             return entity;
-
         } catch (SQLException ex) {
-            logger.error("Error updating review with id {}: {}", entity.getId(), ex);
+            logger.error("Error updating review {} : {}", entity, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public void removeById(Long id) {
-        String sql = "DELETE FROM Reviews WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing review with id {} : {}", id, ex);
+            logger.error("Error removing review by ID {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

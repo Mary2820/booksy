@@ -5,7 +5,7 @@ public class Service {
     private Long categoryId;
     private String name;
     private String description;
-    private int duration;
+    private Integer duration;
 
     public Long getId() {
         return id;

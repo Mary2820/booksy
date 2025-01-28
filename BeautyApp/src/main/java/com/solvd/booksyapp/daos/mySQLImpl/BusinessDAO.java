@@ -15,15 +15,21 @@ import java.util.List;
 
 public class BusinessDAO implements IBusinessDAO {
     private static final Logger logger = LogManager.getLogger(BusinessDAO.class.getName());
+    private static final String GET_BY_NAME = "SELECT * FROM Businesses WHERE name = ?";
+    private static final String GET_BY_CITY = "SELECT * FROM Businesses WHERE city = ?";
+    private static final String GET_BY_POSTCODE = "SELECT * FROM Businesses WHERE postcode = ?";
+    private static final String COUNT_BY_CITY = "SELECT COUNT(*) FROM Businesses WHERE city = ?";
+    private static final String GET_BY_ID = "SELECT * FROM Businesses WHERE id = ?";
+    private static final String SAVE = "INSERT INTO Businesses (name, address, city, postcode) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Businesses SET name = ?, address = ?, city = ?, postcode = ? WHERE id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Businesses WHERE id = ?";
 
     @Override
     public List<Business> getByName(String name) {
-        String sql = "SELECT * FROM Businesses WHERE name = ?";
         List<Business> businesses = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_NAME)) {
             statement.setString(1, name);
 
             try(ResultSet resultSet = statement.executeQuery()) {
@@ -34,17 +40,18 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error fetching businesses by name {} : {}", name, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return businesses;
     }
 
     @Override
     public List<Business> getByCity(String city) {
-        String sql = "SELECT * FROM Businesses WHERE city = ?";
         List<Business> businesses = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_CITY)) {
             statement.setString(1, city);
 
             try(ResultSet resultSet = statement.executeQuery()) {
@@ -55,17 +62,18 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error fetching businesses by city {} : {}", city, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return businesses;
     }
 
     @Override
     public List<Business> getByPostCode(String postcode) {
-        String sql = "SELECT * FROM Businesses WHERE postcode = ?";
         List<Business> businesses = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_POSTCODE)) {
             statement.setString(1, postcode);
 
             try(ResultSet resultSet = statement.executeQuery()) {
@@ -76,19 +84,20 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error fetching businesses by postcode {} : {}", postcode, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return businesses;
     }
 
     @Override
     public int countByCity(String city) {
-        String sql = "SELECT COUNT(*) FROM Businesses WHERE city = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(COUNT_BY_CITY)) {
             statement.setString(1, city);
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            try(ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt(1);
                 }
@@ -96,19 +105,20 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error counting businesses by city {} : {}", city, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return 0;
     }
 
     @Override
     public Business getById(Long id) {
-        String sql = "SELECT * FROM Businesses WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
             statement.setLong(1, id);
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            try(ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return getMappedBusiness(resultSet);
                 }
@@ -116,15 +126,17 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error getting business with id {} : {}", id, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return null;
     }
 
     @Override
     public Business save(Business entity) {
-        String sql = "INSERT INTO Businesses (name, address, city, postcode) VALUES (?, ?, ?, ?)";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getAddress());
             statement.setString(3, entity.getCity());
@@ -145,15 +157,17 @@ public class BusinessDAO implements IBusinessDAO {
         } catch (SQLException ex) {
             logger.error("Error saving business {} : {}", entity, ex);
         }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
         return null;
     }
 
     @Override
     public Business update(Business entity) {
-        String sql = "UPDATE Businesses SET name = ?, address = ?, city = ?, postcode = ? WHERE id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getAddress());
             statement.setString(3, entity.getCity());
@@ -167,24 +181,27 @@ public class BusinessDAO implements IBusinessDAO {
             }
 
             return entity;
-
         } catch (SQLException ex) {
             logger.error("Error updating business {} : {}", entity, ex);
+        }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public void removeById(Long id) {
-        String sql = "DELETE FROM Businesses WHERE id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
-
         } catch (SQLException ex) {
             logger.error("Error removing business by ID {} : {}", id, ex);
+        }
+        finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

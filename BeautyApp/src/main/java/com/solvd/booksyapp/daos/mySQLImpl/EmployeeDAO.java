@@ -16,15 +16,22 @@ import java.util.List;
 
 public class EmployeeDAO implements IEmployeeDAO {
     private static final Logger logger = LogManager.getLogger(EmployeeDAO.class.getName());
+    private static final String GET_BY_BUSINESS_ID = "SELECT * FROM Employees WHERE business_id = ?";
+    private static final String GET_BY_RATING_ABOVE = "SELECT * FROM Employees WHERE rating > ?";
+    private static final String GET_BY_RATING_RANGE = "SELECT * FROM Employees WHERE rating BETWEEN ? AND ?";
+    private static final String COUNT_BY_BUSINESS_ID = "SELECT COUNT(*) FROM Employees WHERE business_id = ?";
+    private static final String UPDATE_RATING = "UPDATE Employees SET rating = ? WHERE id = ?";
+    private static final String GET_BY_ID = "SELECT * FROM Employees WHERE id = ?";
+    private static final String SAVE = "INSERT INTO Employees (user_id, description, rating, business_id) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Employees SET description = ?, rating = ?, business_id = ? WHERE id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Employees WHERE id = ?";
 
     @Override
     public List<Employee> getEmployeesByBusinessId(Long businessId) {
-        String sql = "SELECT * FROM Employees WHERE business_id = ?";
         List<Employee> employees = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_BUSINESS_ID)) {
             statement.setLong(1, businessId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -32,21 +39,20 @@ public class EmployeeDAO implements IEmployeeDAO {
                     employees.add(getMappedEmployee(resultSet));
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error fetching employees by business ID {} : {}", businessId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return employees;
     }
 
     @Override
     public List<Employee> getByRatingAbove(BigDecimal rating) {
-        String sql = "SELECT * FROM Employees WHERE rating > ?";
         List<Employee> employees = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_RATING_ABOVE)) {
             statement.setBigDecimal(1, rating);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -54,21 +60,20 @@ public class EmployeeDAO implements IEmployeeDAO {
                     employees.add(getMappedEmployee(resultSet));
                 }
             }
-
         } catch (SQLException ex) {
-            logger.error("Error fetching employees rating above {} : {}", rating,  ex);
+            logger.error("Error fetching employees rating above {} : {}", rating, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return employees;
     }
 
     @Override
     public List<Employee> getByRatingRange(BigDecimal minRating, BigDecimal maxRating) {
-        String sql = "SELECT * FROM Employees WHERE rating BETWEEN ? AND ?";
         List<Employee> employees = new ArrayList<>();
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_RATING_RANGE)) {
             statement.setBigDecimal(1, minRating);
             statement.setBigDecimal(2, maxRating);
 
@@ -77,21 +82,19 @@ public class EmployeeDAO implements IEmployeeDAO {
                     employees.add(getMappedEmployee(resultSet));
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error fetching employees with rating between {} and {} : {}", minRating, maxRating, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
-
         return employees;
     }
 
     @Override
     public int countByBusinessId(Long businessId) {
-        String sql = "SELECT COUNT(*) FROM Employees WHERE business_id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(COUNT_BY_BUSINESS_ID)) {
             statement.setLong(1, businessId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -99,38 +102,36 @@ public class EmployeeDAO implements IEmployeeDAO {
                     return resultSet.getInt(1);
                 }
             }
-
         } catch (SQLException ex) {
             logger.error("Error counting employees by business ID {} : {}", businessId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return 0;
     }
 
     @Override
     public boolean updateRating(Long id, BigDecimal rating) {
-        String sql = "UPDATE Employees SET rating = ? WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(UPDATE_RATING)) {
             statement.setBigDecimal(1, rating);
             statement.setLong(2, id);
 
             return statement.executeUpdate() > 0;
-
         } catch (SQLException ex) {
             logger.error("Error updating rating for employee with ID {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return false;
     }
 
     @Override
     public Employee getById(Long id) {
-        String sql = "SELECT * FROM Employees WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
             statement.setLong(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -140,16 +141,17 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error getting employee with id {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Employee save(Employee entity) {
-        String sql = "INSERT INTO Employees (user_id, description, rating, business_id) VALUES (?, ?, ?, ?)";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
             statement.setLong(1, entity.getUserId());
             statement.setString(2, entity.getDescription());
             statement.setBigDecimal(3, entity.getRating());
@@ -167,19 +169,19 @@ public class EmployeeDAO implements IEmployeeDAO {
                 }
             }
             return entity;
-
         } catch (SQLException ex) {
             logger.error("Error saving employee {} : {}", entity, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Employee update(Employee entity) {
-        String sql = "UPDATE Employees SET description = ?, rating = ?, business_id = ? WHERE id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, entity.getDescription());
             statement.setBigDecimal(2, entity.getRating());
             statement.setLong(3, entity.getBusinessId());
@@ -192,24 +194,25 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
 
             return entity;
-
         } catch (SQLException ex) {
             logger.error("Error updating employee {} : {}", entity, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public void removeById(Long id) {
-        String sql = "DELETE FROM Employees WHERE id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
+        try(PreparedStatement statement = connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
-
         } catch (SQLException ex) {
             logger.error("Error removing employee by ID {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

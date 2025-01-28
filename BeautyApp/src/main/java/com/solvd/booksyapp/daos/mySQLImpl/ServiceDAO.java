@@ -15,16 +15,21 @@ import java.util.List;
 
 public class ServiceDAO implements IServiceDAO {
     private static final Logger logger = LogManager.getLogger(ServiceDAO.class.getName());
+    private static final String GET_BY_CATEGORY_ID = "SELECT * FROM Services WHERE category_id = ?";
+    private static final String GET_BY_NAME = "SELECT * FROM Services WHERE name = ?";
+    private static final String GET_BY_ID = "SELECT * FROM Services WHERE id = ?";
+    private static final String SAVE = "INSERT INTO Services (category_id, name, description, duration) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Services SET name = ?, description = ?, duration = ? WHERE id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Services WHERE id = ?";
 
     @Override
     public List<Service> getByCategoryId(Long categoryId) {
         List<Service> services = new ArrayList<>();
-        String sql = "SELECT * FROM Services WHERE category_id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_CATEGORY_ID)) {
             statement.setLong(1, categoryId);
+
             try(ResultSet resultSet = statement.executeQuery()){
                 while (resultSet.next()) {
                     services.add(getMappedService(resultSet));
@@ -32,17 +37,17 @@ public class ServiceDAO implements IServiceDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error getting services with category_id {} : {}", categoryId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return services;
     }
 
     @Override
     public Service getByName(String name) {
-        String sql = "SELECT * FROM Services WHERE name = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_NAME)) {
             statement.setString(1, name);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -52,17 +57,17 @@ public class ServiceDAO implements IServiceDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error getting service with name {}:  {}", name, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Service getById(Long id) {
-        String sql = "SELECT * FROM Services WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
             statement.setLong(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -72,17 +77,17 @@ public class ServiceDAO implements IServiceDAO {
             }
         } catch (SQLException ex) {
             logger.error("Error getting service with id {}: {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Service save(Service entity) {
-        String sql = "INSERT INTO Services (category_id, name, description, duration) VALUES (?, ?, ?, ?)";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
             statement.setLong(1, entity.getCategoryId());
             statement.setString(2, entity.getName());
             statement.setString(3, entity.getDescription());
@@ -98,24 +103,23 @@ public class ServiceDAO implements IServiceDAO {
                 }
             }
             return entity;
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("Error saving service {} : {}", entity, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public Service update(Service entity) {
-        String sql = "UPDATE Services SET name = ?, description = ?, duration = ? WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getDescription());
             statement.setInt(3, entity.getDuration());
-            statement.setLong(7, entity.getId());
+            statement.setLong(4, entity.getId());
 
             int affectedRows = statement.executeUpdate();
 
@@ -124,24 +128,25 @@ public class ServiceDAO implements IServiceDAO {
             }
 
             return entity;
-
         } catch (SQLException ex) {
             logger.error("Error updating service with id {}: {}", entity.getId(), ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
         return null;
     }
 
     @Override
     public void removeById(Long id) {
-        String sql = "DELETE FROM Services WHERE id = ?";
+        Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try(PreparedStatement statement = connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
             logger.error("Error removing service with id {} : {}", id, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

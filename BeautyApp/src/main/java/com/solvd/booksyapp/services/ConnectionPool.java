@@ -1,59 +1,57 @@
 package com.solvd.booksyapp.services;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.solvd.booksyapp.constants.Credentials;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ConnectionPool {
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class.getName());
+    private final BlockingQueue<Connection> connections;
     private static final int MAX_SIZE = 10;
-    private static final ConnectionPool instance = new ConnectionPool();
-    private final HikariDataSource dataSource;
+    private static ConnectionPool instance;
 
     private ConnectionPool() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/testdb");
-        config.setUsername("username");
-        config.setPassword("password");
-        config.setMaximumPoolSize(MAX_SIZE);
-        config.setMinimumIdle(2);
-        config.setIdleTimeout(30000);
-        config.setMaxLifetime(1800000);
-        config.setDriverClassName("org.postgresql.Driver");
-
-        this.dataSource = new HikariDataSource(config);
+        this.connections = new ArrayBlockingQueue<>(MAX_SIZE);
     }
 
     public static ConnectionPool getInstance() {
+        if (instance == null) {
+            instance = new ConnectionPool();
+            instance.initializeConnections();
+        }
         return instance;
     }
 
     public Connection getConnection() {
         try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to get connection from pool", e);
+            return connections.take();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Connection waiting interrupted", e);
         }
     }
 
     public void releaseConnection(Connection connection) {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to release connection", e);
-        }
+        connections.add(connection);
     }
 
     public int getAvailableConnections() {
-        return dataSource.getHikariPoolMXBean().getIdleConnections();
+        return connections.size();
     }
 
-    public void shutdown() {
-        if (dataSource != null) {
-            dataSource.close();
+    private void initializeConnections() {
+        for (int i = 0; i < MAX_SIZE; i++) {
+            try {
+                connections.add(DriverManager.getConnection(Credentials.DB_URL, Credentials.DB_USER, Credentials.DB_PASSWORD));
+            } catch (SQLException ex) {
+                logger.error("Failed to establish connection: ", ex);
+            }
         }
     }
 }
