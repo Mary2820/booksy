@@ -31,14 +31,14 @@ public class ServiceDAO implements IServiceDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting services with category_id: {}", categoryId, ex);
+            logger.error("Error getting services with category_id {} : {}", categoryId, ex);
         }
         return services;
     }
 
     @Override
     public Service getByName(String name) {
-        String sql = "SELECT * FROM Users WHERE name = ?";
+        String sql = "SELECT * FROM Services WHERE name = ?";
 
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -100,7 +100,7 @@ public class ServiceDAO implements IServiceDAO {
             return entity;
         }
         catch (SQLException ex) {
-            logger.error("Error saving service: {}", entity, ex);
+            logger.error("Error saving service {} : {}", entity, ex);
         }
         return null;
     }
@@ -141,7 +141,7 @@ public class ServiceDAO implements IServiceDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing service with id: {}", id, ex);
+            logger.error("Error removing service with id {} : {}", id, ex);
         }
     }
 

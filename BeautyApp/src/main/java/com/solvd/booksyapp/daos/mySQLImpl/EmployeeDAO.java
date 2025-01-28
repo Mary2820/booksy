@@ -34,7 +34,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching employees by business ID: {}", businessId, ex);
+            logger.error("Error fetching employees by business ID {} : {}", businessId, ex);
         }
         return employees;
     }
@@ -56,7 +56,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching employees rating above: {}", rating,  ex);
+            logger.error("Error fetching employees rating above {} : {}", rating,  ex);
         }
         return employees;
     }
@@ -79,7 +79,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching employees with rating between {} and {}", minRating, maxRating, ex);
+            logger.error("Error fetching employees with rating between {} and {} : {}", minRating, maxRating, ex);
         }
 
         return employees;
@@ -101,7 +101,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error counting employees by business ID: {}", businessId, ex);
+            logger.error("Error counting employees by business ID {} : {}", businessId, ex);
         }
         return 0;
     }
@@ -119,7 +119,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             return statement.executeUpdate() > 0;
 
         } catch (SQLException ex) {
-            logger.error("Error updating rating for employee with ID: {}", id, ex);
+            logger.error("Error updating rating for employee with ID {} : {}", id, ex);
         }
         return false;
     }
@@ -139,7 +139,7 @@ public class EmployeeDAO implements IEmployeeDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting employee with id: {}", id, ex);
+            logger.error("Error getting employee with id {} : {}", id, ex);
         }
         return null;
     }
@@ -169,22 +169,21 @@ public class EmployeeDAO implements IEmployeeDAO {
             return entity;
 
         } catch (SQLException ex) {
-            logger.error("Error saving employee: {}", entity, ex);
+            logger.error("Error saving employee {} : {}", entity, ex);
         }
         return null;
     }
 
     @Override
     public Employee update(Employee entity) {
-        String sql = "UPDATE Employees SET user_id = ?, description = ?, rating = ?, business_id = ? WHERE id = ?";
+        String sql = "UPDATE Employees SET description = ?, rating = ?, business_id = ? WHERE id = ?";
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setLong(1, entity.getUserId());
-            statement.setString(2, entity.getDescription());
-            statement.setBigDecimal(3, entity.getRating());
-            statement.setLong(4, entity.getBusinessId());
-            statement.setLong(5, entity.getId());
+            statement.setString(1, entity.getDescription());
+            statement.setBigDecimal(2, entity.getRating());
+            statement.setLong(3, entity.getBusinessId());
+            statement.setLong(4, entity.getId());
 
             int affectedRows = statement.executeUpdate();
 
@@ -195,7 +194,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             return entity;
 
         } catch (SQLException ex) {
-            logger.error("Error updating employee: {}", entity, ex);
+            logger.error("Error updating employee {} : {}", entity, ex);
         }
         return null;
     }
@@ -210,7 +209,7 @@ public class EmployeeDAO implements IEmployeeDAO {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            logger.error("Error removing employee by ID: {}", id, ex);
+            logger.error("Error removing employee by ID {} : {}", id, ex);
         }
     }
 

@@ -32,7 +32,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting user with full name: {} {}", firstName, lastName, ex);
+            logger.error("Error getting user with full name {} {} : {}", firstName, lastName, ex);
         }
         return null;
     }
@@ -52,7 +52,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting user with email: {}", email, ex);
+            logger.error("Error getting user with email {} : {}", email, ex);
         }
         return null;
     }
@@ -72,7 +72,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting users with role_id: {}", roleId, ex);
+            logger.error("Error getting users with role_id {} : {}", roleId, ex);
         }
         return users;
     }
@@ -92,7 +92,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting user with id: {}", id, ex);
+            logger.error("Error getting user with id {} : {}", id, ex);
         }
         return null;
     }
@@ -123,14 +123,15 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
             return entity;
         }
         catch (SQLException ex) {
-            logger.error("Error saving user: {}", entity, ex);
+            logger.error("Error saving user {} : {}", entity, ex);
         }
         return null;
     }
 
     @Override
     public User update(User entity) {
-        String sql = "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ?, password = ?, role_id = ? WHERE id = ?";
+        String sql = "UPDATE Users SET first_name = ?, last_name = ?, email = ?, phone = ?, password = ?, role_id = ? " +
+                "WHERE id = ?";
 
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -167,7 +168,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing user with id: {}", id, ex);
+            logger.error("Error removing user with id {} : {}", id, ex);
         }
     }
 

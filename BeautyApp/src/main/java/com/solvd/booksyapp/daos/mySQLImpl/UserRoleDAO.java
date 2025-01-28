@@ -1,7 +1,6 @@
 package com.solvd.booksyapp.daos.mySQLImpl;
 
 import com.solvd.booksyapp.daos.IUserRoleDAO;
-import com.solvd.booksyapp.models.User;
 import com.solvd.booksyapp.models.UserRole;
 import com.solvd.booksyapp.services.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +29,7 @@ public class UserRoleDAO implements IUserRoleDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting user role with name: {} {}", name, ex);
+            logger.error("Error getting user role with name {} : {}", name, ex);
         }
         return null;
     }
@@ -50,7 +49,7 @@ public class UserRoleDAO implements IUserRoleDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting user role with id: {}", id, ex);
+            logger.error("Error getting user role with id {} : {}", id, ex);
         }
         return null;
     }
@@ -77,7 +76,7 @@ public class UserRoleDAO implements IUserRoleDAO {
             return entity;
         }
         catch (SQLException ex) {
-            logger.error("Error saving user role: {}", entity, ex);
+            logger.error("Error saving user role {} : {}", entity, ex);
         }
         return null;
     }
@@ -98,7 +97,6 @@ public class UserRoleDAO implements IUserRoleDAO {
                 throw new IllegalStateException("Update failed, no user role found with id: " + entity.getId());
             }
 
-            logger.info("User role with id {} successfully updated.", entity.getId());
             return entity;
 
         } catch (SQLException ex) {
@@ -117,7 +115,7 @@ public class UserRoleDAO implements IUserRoleDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing user role with id: {}", id, ex);
+            logger.error("Error removing user role with id {} : {}", id, ex);
         }
     }
 

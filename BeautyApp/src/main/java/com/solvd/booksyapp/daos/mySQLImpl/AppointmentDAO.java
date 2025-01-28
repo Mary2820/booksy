@@ -29,7 +29,7 @@ public class AppointmentDAO implements IAppointmentDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting appointments with client id: {}", clientId, ex);
+            logger.error("Error getting appointments with client id {} : {}", clientId, ex);
         }
         return appointments;
     }
@@ -49,7 +49,7 @@ public class AppointmentDAO implements IAppointmentDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting appointments with employee id: {}", employeeId, ex);
+            logger.error("Error getting appointments with employee id {} : {}", employeeId, ex);
         }
         return appointments;
     }
@@ -71,7 +71,7 @@ public class AppointmentDAO implements IAppointmentDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting appointments with client id and date: {} {}", employeeId, date, ex);
+            logger.error("Error getting appointments with client id {} and date {}: {}", employeeId, date, ex);
         }
         return appointments;
     }
@@ -93,7 +93,7 @@ public class AppointmentDAO implements IAppointmentDAO {
             return getById(id);
 
         } catch (SQLException ex) {
-            logger.error("Error updating status for appointment with ID: {}", id, ex);
+            logger.error("Error updating status for appointment with ID {} : {}", id, ex);
         }
         return null;
     }
@@ -113,7 +113,7 @@ public class AppointmentDAO implements IAppointmentDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting appointment with id: {}", id, ex);
+            logger.error("Error getting appointment with id {} : {}", id, ex);
         }
         return null;
     }
@@ -148,26 +148,25 @@ public class AppointmentDAO implements IAppointmentDAO {
             return entity;
         }
         catch (SQLException ex) {
-            logger.error("Error saving appointment: {}", entity, ex);
+            logger.error("Error saving appointment {} : {}", entity, ex);
         }
         return null;
     }
 
     @Override
     public Appointment update(Appointment entity) {
-        String sql = "UPDATE Appointments SET status = ?, created_at = ?, date = ?, day_of_week = ?, start_time = ?," +
+        String sql = "UPDATE Appointments SET status = ?, date = ?, day_of_week = ?, start_time = ?," +
                 " end_time = ? WHERE id = ?";
 
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, entity.getStatus());
-            statement.setTimestamp(2, Timestamp.valueOf(entity.getCreatedAt()));
-            statement.setDate(3, Date.valueOf(entity.getDate()));
-            statement.setString(4, entity.getDayOfWeek());
-            statement.setTime(5, Time.valueOf(entity.getStartTime()));
-            statement.setTime(6, Time.valueOf(entity.getEndTime()));
-            statement.setLong(7, entity.getId());
+            statement.setDate(2, Date.valueOf(entity.getDate()));
+            statement.setString(3, entity.getDayOfWeek());
+            statement.setTime(4, Time.valueOf(entity.getStartTime()));
+            statement.setTime(5, Time.valueOf(entity.getEndTime()));
+            statement.setLong(6, entity.getId());
 
             int affectedRows = statement.executeUpdate();
 
@@ -193,7 +192,7 @@ public class AppointmentDAO implements IAppointmentDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing appointment with id: {}", id, ex);
+            logger.error("Error removing appointment with id {} : {}", id, ex);
         }
     }
 

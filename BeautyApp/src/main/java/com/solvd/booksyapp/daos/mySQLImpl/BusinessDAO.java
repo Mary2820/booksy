@@ -32,7 +32,7 @@ public class BusinessDAO implements IBusinessDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error fetching businesses by name: {}", name, ex);
+            logger.error("Error fetching businesses by name {} : {}", name, ex);
         }
         return businesses;
     }
@@ -53,7 +53,7 @@ public class BusinessDAO implements IBusinessDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error fetching businesses by city: {}", city, ex);
+            logger.error("Error fetching businesses by city {} : {}", city, ex);
         }
         return businesses;
     }
@@ -74,7 +74,7 @@ public class BusinessDAO implements IBusinessDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error fetching businesses by postcode: {}", postcode, ex);
+            logger.error("Error fetching businesses by postcode {} : {}", postcode, ex);
         }
         return businesses;
     }
@@ -94,7 +94,7 @@ public class BusinessDAO implements IBusinessDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error counting employees by city: {}", city, ex);
+            logger.error("Error counting businesses by city {} : {}", city, ex);
         }
         return 0;
     }
@@ -114,7 +114,7 @@ public class BusinessDAO implements IBusinessDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting employee with id: {}", id, ex);
+            logger.error("Error getting business with id {} : {}", id, ex);
         }
         return null;
     }
@@ -143,7 +143,7 @@ public class BusinessDAO implements IBusinessDAO {
             }
             return entity;
         } catch (SQLException ex) {
-            logger.error("Error saving business: {}", entity, ex);
+            logger.error("Error saving business {} : {}", entity, ex);
         }
         return null;
     }
@@ -169,7 +169,7 @@ public class BusinessDAO implements IBusinessDAO {
             return entity;
 
         } catch (SQLException ex) {
-            logger.error("Error updating business: {}", entity, ex);
+            logger.error("Error updating business {} : {}", entity, ex);
         }
         return null;
     }
@@ -184,7 +184,7 @@ public class BusinessDAO implements IBusinessDAO {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            logger.error("Error removing business by ID: {}", id, ex);
+            logger.error("Error removing business by ID {} : {}", id, ex);
         }
     }
 

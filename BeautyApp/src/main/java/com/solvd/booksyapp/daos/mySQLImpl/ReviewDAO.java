@@ -34,7 +34,7 @@ public class ReviewDAO implements IReviewDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching reviews for client with ID: {}", clientId, ex);
+            logger.error("Error fetching reviews for client with ID {} : {}", clientId, ex);
         }
 
         return reviews;
@@ -60,7 +60,7 @@ public class ReviewDAO implements IReviewDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching reviews for employee with ID: {}", employeeId, ex);
+            logger.error("Error fetching reviews for employee with ID {} : {}", employeeId, ex);
         }
 
         return reviews;
@@ -84,7 +84,7 @@ public class ReviewDAO implements IReviewDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error fetching average rating for employee with ID: {}", employeeId, ex);
+            logger.error("Error fetching average rating for employee with ID {} : {}", employeeId, ex);
         }
         return BigDecimal.ZERO;
     }
@@ -109,7 +109,7 @@ public class ReviewDAO implements IReviewDAO {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error fetching average rating for business with ID: {}", businessId, ex);
+            logger.error("Error fetching average rating for business with ID {} : {}", businessId, ex);
         }
 
         return BigDecimal.ZERO;
@@ -130,7 +130,7 @@ public class ReviewDAO implements IReviewDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting review with id: {}", id, ex);
+            logger.error("Error getting review with id {} : {}", id, ex);
         }
         return null;
     }
@@ -160,7 +160,7 @@ public class ReviewDAO implements IReviewDAO {
             return entity;
         }
         catch (SQLException ex) {
-            logger.error("Error saving review: {}", entity, ex);
+            logger.error("Error saving review {} : {}", entity, ex);
         }
         return null;
     }
@@ -200,7 +200,7 @@ public class ReviewDAO implements IReviewDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing review with id: {}", id, ex);
+            logger.error("Error removing review with id {} : {}", id, ex);
         }
     }
 
