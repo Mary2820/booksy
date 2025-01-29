@@ -137,7 +137,7 @@ public class AppointmentDAO implements IAppointmentDAO {
     public Appointment save(Appointment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(SAVE)) {
             statement.setLong(1, entity.getClientId());
             statement.setLong(2, entity.getServiceId());
             statement.setLong(3, entity.getEmployeeId());
