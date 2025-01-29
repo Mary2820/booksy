@@ -1,5 +1,7 @@
 package com.solvd.booksyapp.enums;
 
+import java.util.Objects;
+
 public enum UserRole {
     CLIENT(1L, "client"),
     EMPLOYEE(2L, "employee");
@@ -20,9 +22,9 @@ public enum UserRole {
         return name;
     }
 
-    public static UserRole getById(int id) {
+    public static UserRole getById(Long id) {
         for (UserRole userRole : values()) {
-            if (userRole.getId() == id) {
+            if (Objects.equals(userRole.getId(), id)) {
                 return userRole;
             }
         }
