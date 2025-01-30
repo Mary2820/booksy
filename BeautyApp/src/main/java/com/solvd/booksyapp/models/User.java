@@ -9,6 +9,18 @@ public class User {
     private String password;
     private Long roleId;
 
+    public User(String firstName, String lastName, String email, String phone, String password, Long roleId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.roleId = roleId;
+    }
+
+    public User() {
+    }
+
     public Long getId() {
         return id;
     }

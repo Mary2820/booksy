@@ -3,18 +3,17 @@ package com.solvd.booksyapp.models;
 import java.math.BigDecimal;
 
 public class Offering {
-    private Long id;
     private Long employeeId;
-    private Long serviceId;
+    private Long procedureId;
     private BigDecimal price;
 
-    public Long getId() {
-        return id;
+    public Offering(Long employeeId, Long procedureId, BigDecimal price) {
+        this.employeeId = employeeId;
+        this.procedureId = procedureId;
+        this.price = price;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Offering() {}
 
     public Long getEmployeeId() {
         return employeeId;
@@ -24,12 +23,12 @@ public class Offering {
         this.employeeId = employeeId;
     }
 
-    public Long getServiceId() {
-        return serviceId;
+    public Long getProcedureId() {
+        return procedureId;
     }
 
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
+    public void setProcedureId(Long procedureId) {
+        this.procedureId = procedureId;
     }
 
     public BigDecimal getPrice() {

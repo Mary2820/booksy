@@ -1,30 +1,27 @@
 package com.solvd.booksyapp.daos.mySQLImpl;
 
-import com.solvd.booksyapp.daos.IServiceDAO;
-import com.solvd.booksyapp.models.Service;
+import com.solvd.booksyapp.daos.IProcedureDAO;
+import com.solvd.booksyapp.models.Procedure;
 import com.solvd.booksyapp.services.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceDAO implements IServiceDAO {
-    private static final Logger logger = LogManager.getLogger(ServiceDAO.class.getName());
-    private static final String GET_BY_CATEGORY_ID = "SELECT * FROM Services WHERE category_id = ?";
-    private static final String GET_BY_NAME = "SELECT * FROM Services WHERE name = ?";
-    private static final String GET_BY_ID = "SELECT * FROM Services WHERE id = ?";
-    private static final String SAVE = "INSERT INTO Services (category_id, name, description, duration) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE Services SET name = ?, description = ?, duration = ? WHERE id = ?";
-    private static final String REMOVE_BY_ID = "DELETE FROM Services WHERE id = ?";
+public class ProcedureDAO implements IProcedureDAO {
+    private static final Logger logger = LogManager.getLogger(ProcedureDAO.class.getName());
+    private static final String GET_BY_CATEGORY_ID = "SELECT * FROM Procedures WHERE category_id = ?";
+    private static final String GET_BY_NAME = "SELECT * FROM Procedures WHERE name = ?";
+    private static final String GET_BY_ID = "SELECT * FROM Procedures WHERE id = ?";
+    private static final String SAVE = "INSERT INTO Procedures (category_id, name, description, duration) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Procedures SET name = ?, description = ?, duration = ? WHERE id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Procedures WHERE id = ?";
 
     @Override
-    public List<Service> getByCategoryId(Long categoryId) {
-        List<Service> services = new ArrayList<>();
+    public List<Procedure> getByCategoryId(Long categoryId) {
+        List<Procedure> procedures = new ArrayList<>();
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(GET_BY_CATEGORY_ID)) {
@@ -32,19 +29,19 @@ public class ServiceDAO implements IServiceDAO {
 
             try(ResultSet resultSet = statement.executeQuery()){
                 while (resultSet.next()) {
-                    services.add(getMappedService(resultSet));
+                    procedures.add(getMappedProcedure(resultSet));
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting services with category_id {} : {}", categoryId, ex);
+            logger.error("Error getting procedures with category_id {} : {}", categoryId, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return services;
+        return procedures;
     }
 
     @Override
-    public Service getByName(String name) {
+    public Procedure getByName(String name) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(GET_BY_NAME)) {
@@ -52,11 +49,11 @@ public class ServiceDAO implements IServiceDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return getMappedService(resultSet);
+                    return getMappedProcedure(resultSet);
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting service with name {}:  {}", name, ex);
+            logger.error("Error getting procedure with name {}:  {}", name, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -64,7 +61,7 @@ public class ServiceDAO implements IServiceDAO {
     }
 
     @Override
-    public Service getById(Long id) {
+    public Procedure getById(Long id) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
@@ -72,11 +69,11 @@ public class ServiceDAO implements IServiceDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return getMappedService(resultSet);
+                    return getMappedProcedure(resultSet);
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting service with id {}: {}", id, ex);
+            logger.error("Error getting procedure with id {}: {}", id, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -84,17 +81,17 @@ public class ServiceDAO implements IServiceDAO {
     }
 
     @Override
-    public Service save(Service entity) {
+    public Procedure save(Procedure entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, entity.getCategoryId());
             statement.setString(2, entity.getName());
             statement.setString(3, entity.getDescription());
             statement.setInt(4, entity.getDuration());
 
             if (statement.executeUpdate() == 0) {
-                throw new IllegalStateException("Saving service failed, no rows affected.");
+                throw new IllegalStateException("Saving procedure failed, no rows affected.");
             }
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
@@ -104,7 +101,7 @@ public class ServiceDAO implements IServiceDAO {
             }
             return entity;
         } catch (SQLException ex) {
-            logger.error("Error saving service {} : {}", entity, ex);
+            logger.error("Error saving procedure {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -112,7 +109,7 @@ public class ServiceDAO implements IServiceDAO {
     }
 
     @Override
-    public Service update(Service entity) {
+    public Procedure update(Procedure entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -124,12 +121,12 @@ public class ServiceDAO implements IServiceDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new IllegalStateException("Update failed, no service found with id: " + entity.getId());
+                throw new IllegalStateException("Update failed, no procedure found with id: " + entity.getId());
             }
 
             return entity;
         } catch (SQLException ex) {
-            logger.error("Error updating service with id {}: {}", entity.getId(), ex);
+            logger.error("Error updating procedure with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -144,21 +141,21 @@ public class ServiceDAO implements IServiceDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing service with id {} : {}", id, ex);
+            logger.error("Error removing procedure with id {} : {}", id, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
-    private Service getMappedService(ResultSet resultSet) throws SQLException {
-        Service service = new Service();
+    private Procedure getMappedProcedure(ResultSet resultSet) throws SQLException {
+        Procedure procedure = new Procedure();
 
-        service.setId(resultSet.getLong("id"));
-        service.setCategoryId(resultSet.getLong("category_id"));
-        service.setName(resultSet.getString("name"));
-        service.setDescription(resultSet.getString("description"));
-        service.setDuration(resultSet.getInt("duration"));
+        procedure.setId(resultSet.getLong("id"));
+        procedure.setCategoryId(resultSet.getLong("category_id"));
+        procedure.setName(resultSet.getString("name"));
+        procedure.setDescription(resultSet.getString("description"));
+        procedure.setDuration(resultSet.getInt("duration"));
 
-        return service;
+        return procedure;
     }
 }

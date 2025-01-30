@@ -12,15 +12,16 @@ import java.util.List;
 
 public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     private static final Logger logger = LogManager.getLogger(OfferingDAO.class.getName());
-    private static final String GET_BY_ID = "SELECT * FROM Offerings WHERE id = ?";
     private static final String GET_BY_EMPLOYEE_ID = "SELECT * FROM Offerings WHERE employee_id = ?";
     private static final String GET_BY_BUSINESS_ID = "SELECT * FROM Offerings o " +
                     "LEFT JOIN Employees e ON o.employee_id = e.id " +
                     "WHERE e.business_id = ?";
-    private static final String GET_BY_SERVICE_ID = "SELECT * FROM Offerings WHERE service_id = ?";
-    private static final String SAVE = "INSERT INTO Offerings (employee_id, service_id, price) VALUES (?, ?, ?)";
-    private static final String UPDATE = "UPDATE Offerings SET employee_id = ?, service_id = ?, price = ? WHERE id = ?";
-    private static final String REMOVE_BY_ID = "DELETE FROM Offerings WHERE id = ?";
+    private static final String GET_BY_PROCEDURE_ID = "SELECT * FROM Offerings WHERE procedure_id = ?";
+    private static final String GET_BY_EMPLOYEE_AND_PROCEDURE = "SELECT * FROM Offerings WHERE employee_id = ?" +
+            " AND procedure_id = ?;";
+    private static final String SAVE = "INSERT INTO Offerings (employee_id, procedure_id, price) VALUES (?, ?, ?)";
+    private static final String UPDATE = "UPDATE Offerings SET price = ? WHERE employee_id = ?, procedure_id = ?";
+    private static final String REMOVE_BY_ID = "DELETE FROM Offerings WHERE employee_id = ?, procedure_id = ?";
 
     @Override
     public List<Offering> getByEmployeeId(Long employeeId) {
@@ -65,12 +66,12 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     }
 
     @Override
-    public List<Offering> getByServiceId(Long serviceId) {
+    public List<Offering> getByProcedureId(Long procedureId) {
         List<Offering> offerings = new ArrayList<>();
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(GET_BY_SERVICE_ID)) {
-            statement.setLong(1, serviceId);
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_PROCEDURE_ID)) {
+            statement.setLong(1, procedureId);
 
             try(ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -78,7 +79,7 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting offerings for service_id {} : {}", serviceId, ex);
+            logger.error("Error getting offerings for procedure_id {} : {}", procedureId, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -86,11 +87,12 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     }
 
     @Override
-    public Offering getById(Long id) {
+    public Offering getByEmployeeIdAndProcedureId(Long employeeId, Long procedureId) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
-            statement.setLong(1, id);
+        try (PreparedStatement statement = connection.prepareStatement(GET_BY_EMPLOYEE_AND_PROCEDURE)) {
+            statement.setLong(1, employeeId);
+            statement.setLong(2, procedureId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -98,7 +100,7 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error getting offering with id {} : {}", id, ex);
+            logger.error("Error getting offering with employeeId {} and procedureId {}: {}", employeeId, procedureId, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -109,20 +111,15 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     public Offering save(Offering entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, entity.getEmployeeId());
-            statement.setLong(2, entity.getServiceId());
+            statement.setLong(2, entity.getProcedureId());
             statement.setBigDecimal(3, entity.getPrice());
 
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Saving offering failed, no rows affected.");
             }
 
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    entity.setId(generatedKeys.getLong(1));
-                }
-            }
             return entity;
         } catch (SQLException ex) {
             logger.error("Error saving offering {} : {}", entity, ex);
@@ -133,23 +130,23 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     }
 
     @Override
-    public Offering update(Offering entity) {
+    public Offering updatePrice(Offering offering) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
-            statement.setLong(1, entity.getEmployeeId());
-            statement.setLong(2, entity.getServiceId());
-            statement.setBigDecimal(3, entity.getPrice());
-            statement.setLong(4, entity.getId());
+            statement.setBigDecimal(1, offering.getPrice());
+            statement.setLong(2, offering.getEmployeeId());
+            statement.setLong(3, offering.getProcedureId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
-                throw new IllegalStateException("Update failed, no offering found with id: " + entity.getId());
+                throw new IllegalStateException("Update failed, no offering found");
             }
 
-            return entity;
+            return offering;
         } catch (SQLException ex) {
-            logger.error("Error updating offering with id {}: {}", entity.getId(), ex);
+            logger.error("Error updating offering with employee id {} and procedure id {} : {}",
+                    offering.getEmployeeId(), offering.getProcedureId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -157,14 +154,16 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     }
 
     @Override
-    public void removeById(Long id) {
+    public void remove(Long employeeId, Long procedureId) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(REMOVE_BY_ID)) {
-            statement.setLong(1, id);
+            statement.setLong(1, employeeId);
+            statement.setLong(2, procedureId);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            logger.error("Error removing offering with id {} : {}", id, ex);
+            logger.error("Error removing offering with employee id {} and procedure id {} : {}",
+                    employeeId, procedureId, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -172,9 +171,9 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
 
     private Offering getMappedOffering(ResultSet resultSet) throws SQLException {
         Offering offering = new Offering();
-        offering.setId(resultSet.getLong("id"));
+
         offering.setEmployeeId(resultSet.getLong("employee_id"));
-        offering.setServiceId(resultSet.getLong("service_id"));
+        offering.setProcedureId(resultSet.getLong("procedure_id"));
         offering.setPrice(resultSet.getBigDecimal("price"));
         return offering;
     }

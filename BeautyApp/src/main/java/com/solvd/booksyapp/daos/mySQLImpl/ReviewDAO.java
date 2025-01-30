@@ -143,7 +143,7 @@ public class ReviewDAO implements IReviewDAO {
     public Review save(Review entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, entity.getAppointmentId());
             statement.setBigDecimal(2, entity.getRating());
             statement.setString(3, entity.getComment());

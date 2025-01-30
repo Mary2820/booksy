@@ -18,7 +18,7 @@ public class AppointmentDAO implements IAppointmentDAO {
     private static final String GET_BY_EMPLOYEE_ID_AND_DATE = "SELECT * FROM Appointments WHERE employee_id = ? AND date = ?";
     private static final String UPDATE_STATUS = "UPDATE Appointments SET status = ? WHERE id = ?";
     private static final String GET_BY_ID = "SELECT * FROM Appointments WHERE id = ?";
-    private static final String SAVE = "INSERT INTO Appointments (client_id, service_id, employee_id, status, created_at," +
+    private static final String SAVE = "INSERT INTO Appointments (client_id, procedure_id, employee_id, status, created_at," +
             " date, day_of_week, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE Appointments SET status = ?, date = ?, day_of_week = ?, start_time = ?," +
             " end_time = ? WHERE id = ?";
@@ -137,9 +137,9 @@ public class AppointmentDAO implements IAppointmentDAO {
     public Appointment save(Appointment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try (PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try (PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, entity.getClientId());
-            statement.setLong(2, entity.getServiceId());
+            statement.setLong(2, entity.getProcedureId());
             statement.setLong(3, entity.getEmployeeId());
             statement.setString(4, entity.getStatus());
             statement.setTimestamp(5, Timestamp.valueOf(entity.getCreatedAt()));
@@ -211,7 +211,7 @@ public class AppointmentDAO implements IAppointmentDAO {
 
         appointment.setId(resultSet.getLong("id"));
         appointment.setClientId(resultSet.getLong("client_id"));
-        appointment.setServiceId(resultSet.getLong("service_id"));
+        appointment.setProcedureId(resultSet.getLong("procedure_id"));
         appointment.setEmployeeId(resultSet.getLong("employee_id"));
         appointment.setStatus(resultSet.getString("status"));
         appointment.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());

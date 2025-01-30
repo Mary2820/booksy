@@ -6,10 +6,7 @@ import com.solvd.booksyapp.services.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +22,24 @@ public class BusinessDAO implements IBusinessDAO {
     private static final String REMOVE_BY_ID = "DELETE FROM Businesses WHERE id = ?";
 
     @Override
-    public List<Business> getByName(String name) {
-        List<Business> businesses = new ArrayList<>();
+    public Business getByName(String name) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(GET_BY_NAME)) {
             statement.setString(1, name);
 
             try(ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    businesses.add(getMappedBusiness(resultSet));
+                if (resultSet.next()) {
+                    return getMappedBusiness(resultSet);
                 }
             }
         } catch (SQLException ex) {
-            logger.error("Error fetching businesses by name {} : {}", name, ex);
+            logger.error("Error fetching business by name {} : {}", name, ex);
         }
         finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return businesses;
+        return null;
     }
 
     @Override
@@ -136,7 +132,7 @@ public class BusinessDAO implements IBusinessDAO {
     public Business save(Business entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getAddress());
             statement.setString(3, entity.getCity());

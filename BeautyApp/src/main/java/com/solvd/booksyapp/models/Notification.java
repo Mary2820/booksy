@@ -9,6 +9,14 @@ public class Notification {
     private String status;
     private LocalDateTime createdAt;
 
+    public Notification(Long appointmentId, String message, String status) {
+        this.appointmentId = appointmentId;
+        this.message = message;
+        this.status = status;
+    }
+
+    public Notification() {}
+
     public Long getId() {
         return id;
     }

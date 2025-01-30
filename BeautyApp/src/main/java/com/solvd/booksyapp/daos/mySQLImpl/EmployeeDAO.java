@@ -7,16 +7,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO implements IEmployeeDAO {
     private static final Logger logger = LogManager.getLogger(EmployeeDAO.class.getName());
     private static final String GET_BY_BUSINESS_ID = "SELECT * FROM Employees WHERE business_id = ?";
+    private static final String GET_BY_USER_ID = "SELECT * FROM Employees WHERE user_id = ?";
     private static final String GET_BY_RATING_ABOVE = "SELECT * FROM Employees WHERE rating > ?";
     private static final String GET_BY_RATING_RANGE = "SELECT * FROM Employees WHERE rating BETWEEN ? AND ?";
     private static final String COUNT_BY_BUSINESS_ID = "SELECT COUNT(*) FROM Employees WHERE business_id = ?";
@@ -45,6 +43,26 @@ public class EmployeeDAO implements IEmployeeDAO {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
         return employees;
+    }
+
+    @Override
+    public Employee getByUserId(Long userId) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+
+        try(PreparedStatement statement = connection.prepareStatement(GET_BY_USER_ID)) {
+            statement.setLong(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return getMappedEmployee(resultSet);
+                }
+            }
+        } catch (SQLException ex) {
+            logger.error("Error getting employee with user id {} : {}", userId, ex);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+        return null;
     }
 
     @Override
@@ -151,7 +169,7 @@ public class EmployeeDAO implements IEmployeeDAO {
     public Employee save(Employee entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, entity.getUserId());
             statement.setString(2, entity.getDescription());
             statement.setBigDecimal(3, entity.getRating());

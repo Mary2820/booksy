@@ -12,10 +12,10 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
     private static final Logger logger = LogManager.getLogger(PaymentDAO.class.getName());
     private static final String GET_BY_APPOINTMENT_ID = "SELECT * FROM Payments WHERE appointment_id = ?";
     private static final String GET_BY_ID = "SELECT * FROM Payments WHERE id = ?";
-    private static final String SAVE = "INSERT INTO Payments (amount, payment_date, payment_status, appointment_id)" +
+    private static final String SAVE = "INSERT INTO Payments (appointment_id, amount, payment_date, status)" +
             " VALUES (?, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE Payments SET amount = ?, payment_date = ?, payment_status = ?," +
-            " appointment_id = ? WHERE id = ?";
+    private static final String UPDATE = "UPDATE Payments SET appointment_id = ?, amount = ?, payment_date = ?," +
+            " status = ? WHERE id = ?";
     private static final String REMOVE_BY_ID = "DELETE FROM Payments WHERE id = ?";
 
     @Override
@@ -62,11 +62,12 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
     public Payment save(Payment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
-            statement.setBigDecimal(1, entity.getAmount());
-            statement.setDate(2, Date.valueOf(entity.getPaymentDate()));
-            statement.setString(3, entity.getStatus());
-            statement.setLong(4, entity.getAppointmentId());
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setLong(1, entity.getAppointmentId());
+            statement.setBigDecimal(2, entity.getAmount());
+            statement.setDate(3, Date.valueOf(entity.getPaymentDate()));
+            statement.setString(4, entity.getStatus());
+
 
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Saving payment failed, no rows affected.");
@@ -91,10 +92,10 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
-            statement.setBigDecimal(1, entity.getAmount());
-            statement.setDate(2, Date.valueOf(entity.getPaymentDate()));
-            statement.setString(3, entity.getStatus());
-            statement.setLong(4, entity.getAppointmentId());
+            statement.setLong(1, entity.getAppointmentId());
+            statement.setBigDecimal(2, entity.getAmount());
+            statement.setDate(3, Date.valueOf(entity.getPaymentDate()));
+            statement.setString(4, entity.getStatus());
             statement.setLong(5, entity.getId());
 
             int affectedRows = statement.executeUpdate();
@@ -130,10 +131,10 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
         Payment payment = new Payment();
 
         payment.setId(resultSet.getLong("id"));
+        payment.setAppointmentId(resultSet.getLong("appointment_id"));
         payment.setAmount(resultSet.getBigDecimal("amount"));
         payment.setPaymentDate(resultSet.getDate("payment_date").toLocalDate());
-        payment.setStatus(resultSet.getString("payment_status"));
-        payment.setAppointmentId(resultSet.getLong("appointment_id"));
+        payment.setStatus(resultSet.getString("status"));
 
         return payment;
     }

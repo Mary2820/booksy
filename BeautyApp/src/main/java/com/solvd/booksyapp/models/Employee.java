@@ -9,6 +9,16 @@ public class Employee {
     private BigDecimal rating;
     private Long businessId;
 
+    public Employee(Long businessId, BigDecimal rating, String description, Long userId) {
+        this.businessId = businessId;
+        this.rating = rating;
+        this.description = description;
+        this.userId = userId;
+    }
+
+    public Employee() {
+    }
+
     public Long getId() {
         return id;
     }

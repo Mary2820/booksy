@@ -10,6 +10,14 @@ public class Review {
     private String comment;
     private LocalDateTime createdAt;
 
+    public Review(Long appointmentId, BigDecimal rating, String comment) {
+        this.appointmentId = appointmentId;
+        this.rating = rating;
+        this.comment = comment;
+    }
+
+    public Review() {}
+
     public Long getId() {
         return id;
     }

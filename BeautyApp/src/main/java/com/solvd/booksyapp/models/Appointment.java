@@ -7,7 +7,7 @@ import java.time.LocalTime;
 public class Appointment {
     private Long id;
     private Long clientId;
-    private Long serviceId;
+    private Long procedureId;
     private Long employeeId;
     private String status;
     private LocalDateTime createdAt;
@@ -15,6 +15,20 @@ public class Appointment {
     private String dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
+
+    public Appointment(Long clientId, Long procedureId, Long employeeId, String status, LocalDate date,
+                       String dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        this.clientId = clientId;
+        this.procedureId = procedureId;
+        this.employeeId = employeeId;
+        this.status = status;
+        this.date = date;
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Appointment() {}
 
     public Long getId() {
         return id;
@@ -32,12 +46,12 @@ public class Appointment {
         this.clientId = clientId;
     }
 
-    public Long getServiceId() {
-        return serviceId;
+    public Long getProcedureId() {
+        return procedureId;
     }
 
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
+    public void setProcedureId(Long procedureId) {
+        this.procedureId = procedureId;
     }
 
     public Long getEmployeeId() {

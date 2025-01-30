@@ -2,8 +2,6 @@ package com.solvd.booksyapp.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Payment {
     private Long id;
@@ -11,6 +9,15 @@ public class Payment {
     private BigDecimal amount;
     private LocalDate paymentDate;
     private String status;
+
+    public Payment(Long appointmentId, BigDecimal amount, LocalDate paymentDate, String status) {
+        this.appointmentId = appointmentId;
+        this.amount = amount;
+        this.paymentDate = paymentDate;
+        this.status = status;
+    }
+
+    public Payment() {}
 
     public Long getId() {
         return id;

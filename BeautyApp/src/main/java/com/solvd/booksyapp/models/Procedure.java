@@ -1,11 +1,20 @@
 package com.solvd.booksyapp.models;
 
-public class Service {
+public class Procedure {
     private Long id;
     private Long categoryId;
     private String name;
     private String description;
     private Integer duration;
+
+    public Procedure(Long categoryId, String name, String description, Integer duration) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+    }
+
+    public Procedure() {}
 
     public Long getId() {
         return id;

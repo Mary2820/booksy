@@ -7,6 +7,15 @@ public class Business {
     private String city;
     private String postcode;
 
+    public Business(String name, String address, String city, String postcode) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.postcode = postcode;
+    }
+
+    public Business() {}
+
     public Long getId() {
         return id;
     }

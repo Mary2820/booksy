@@ -6,10 +6,7 @@ import com.solvd.booksyapp.services.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +19,8 @@ public class NotificationDAO extends AbstractMySQLDAO implements INotificationDA
             "LEFT JOIN Appointments a ON n.appointment_id = a.id " +
             "WHERE a.employee_id = ?";
     private static final String GET_BY_ID = "SELECT * FROM Notifications WHERE id = ?";
-    private static final String SAVE = "INSERT INTO Notifications (message, appointment_id, status) VALUES (?, ?, ?)";
+    private static final String SAVE = "INSERT INTO Notifications (message, appointment_id, status, created_at)" +
+            " VALUES (?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE Notifications SET message = ?, appointment_id = ?, status = ? WHERE id = ?";
     private static final String REMOVE_BY_ID = "DELETE FROM Notifications WHERE id = ?";
 
@@ -92,10 +90,11 @@ public class NotificationDAO extends AbstractMySQLDAO implements INotificationDA
     public Notification save(Notification entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
-        try(PreparedStatement statement = connection.prepareStatement(SAVE)) {
+        try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getMessage());
             statement.setLong(2, entity.getAppointmentId());
             statement.setString(3, entity.getStatus());
+            statement.setTimestamp(4, Timestamp.valueOf(entity.getCreatedAt()));
 
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Saving notification failed, no rows affected.");
