@@ -109,4 +109,20 @@ public class Appointment {
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", clientId=" + clientId +
+                ", procedureId=" + procedureId +
+                ", employeeId=" + employeeId +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
+                ", date=" + date +
+                ", dayOfWeek='" + dayOfWeek + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }

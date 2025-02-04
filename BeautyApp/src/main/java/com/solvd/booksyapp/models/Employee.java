@@ -58,4 +58,15 @@ public class Employee {
     public void setBusinessId(Long businessId) {
         this.businessId = businessId;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", description='" + description + '\'' +
+                ", rating=" + rating +
+                ", businessId=" + businessId +
+                '}';
+    }
 }

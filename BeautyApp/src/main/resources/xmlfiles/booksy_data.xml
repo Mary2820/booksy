@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<booksy_data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="booksy_schema.xsd">
+    
+    <users>
+        <user id="30">
+            <firstName>Jack</firstName>
+            <lastName>Smith</lastName>
+            <email>jSmith@gmail.com</email>
+            <phone>+48741454567</phone>
+            <password>djffk3</password>
+            <roleId>1</roleId>
+        </user>
+        <user id="31">
+            <firstName>Emily</firstName>
+            <lastName>Davis</lastName>
+            <email>eDavis@gmail.com</email>
+            <phone>+48452345678</phone>
+            <password>fgjmkhfkmg6</password>
+            <roleId>2</roleId>
+        </user>
+    </users>
+    
+    <businesses>
+        <business id="13">
+            <name>Beauty Salon Charm</name>
+            <address>ul. Klonowa 52</address>
+            <city>Poznan</city>
+            <postcode>60-005</postcode>
+        </business>
+    </businesses>
+    
+    <employees>
+        <employee id="17">
+            <userId>31</userId>
+            <description>Senior Hair Stylist with 10 years experience</description>
+            <rating>4.8</rating>
+            <businessId>13</businessId>
+        </employee>
+    </employees>
+    
+    <procedures>
+        <procedure id="21">
+            <categoryId>1</categoryId>
+            <name>Haircut and Styling</name>
+            <description>Professional haircut with styling</description>
+            <duration>60</duration>
+        </procedure>
+    </procedures>
+    
+    <appointments>
+        <appointment id="1">
+            <clientId>31</clientId>
+            <procedureId>21</procedureId>
+            <employeeId>17</employeeId>
+            <status>confirmed</status>
+            <createdAt>2024-02-04T10:30:00</createdAt>
+            <date>2024-02-10</date>
+            <dayOfWeek>SATURDAY</dayOfWeek>
+            <startTime>14:00:00</startTime>
+            <endTime>15:00:00</endTime>
+        </appointment>
+    </appointments>
+</booksy_data>

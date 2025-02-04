@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="booksy_data">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="users">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="user" type="userType" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="businesses">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="business" type="businessType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="employees">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="employee" type="employeeType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="procedures">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="procedure" type="procedureType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="appointments">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="appointment" type="appointmentType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="userType">
+        <xs:sequence>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+            <xs:element name="roleId" type="xs:long"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="businessType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="city" type="xs:string"/>
+            <xs:element name="postcode" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="employeeType">
+        <xs:sequence>
+            <xs:element name="userId" type="xs:long"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="rating" type="xs:decimal"/>
+            <xs:element name="businessId" type="xs:long"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="procedureType">
+        <xs:sequence>
+            <xs:element name="categoryId" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="duration" type="xs:integer"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="appointmentType">
+        <xs:sequence>
+            <xs:element name="clientId" type="xs:long"/>
+            <xs:element name="procedureId" type="xs:long"/>
+            <xs:element name="employeeId" type="xs:long"/>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="createdAt" type="xs:dateTime"/>
+            <xs:element name="date" type="xs:date"/>
+            <xs:element name="dayOfWeek" type="xs:string"/>
+            <xs:element name="startTime" type="xs:time"/>
+            <xs:element name="endTime" type="xs:time"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+</xs:schema> 

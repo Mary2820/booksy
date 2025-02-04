@@ -1,4 +1,4 @@
-package com.solvd.booksyapp.services;
+package com.solvd.booksyapp.utils;
 
 import com.solvd.booksyapp.constants.Credentials;
 import org.apache.logging.log4j.LogManager;

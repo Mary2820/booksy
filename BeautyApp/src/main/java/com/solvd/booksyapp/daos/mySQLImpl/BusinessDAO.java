@@ -2,7 +2,7 @@ package com.solvd.booksyapp.daos.mySQLImpl;
 
 import com.solvd.booksyapp.daos.IBusinessDAO;
 import com.solvd.booksyapp.models.Business;
-import com.solvd.booksyapp.services.ConnectionPool;
+import com.solvd.booksyapp.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

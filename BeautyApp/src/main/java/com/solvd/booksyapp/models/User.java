@@ -76,4 +76,17 @@ public class User {
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", roleId=" + roleId +
+                '}';
+    }
 }
