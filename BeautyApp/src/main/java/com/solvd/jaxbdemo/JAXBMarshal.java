@@ -10,41 +10,41 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-public class JaxbMarshal {
-    private static final Logger logger = LogManager.getLogger(JaxbMarshal.class.getName());
+public class JAXBMarshal {
+    private static final Logger logger = LogManager.getLogger(JAXBMarshal.class.getName());
     private static final File MARSHALED_XML = new File("src/main/resources/xmlfiles/marshaled_data.xml");
     private static final File ORIGINAL_XML = new File("src/main/resources/xmlfiles/booksy_data.xml");
 
     public static void main(String[] args) {
-        BooksyDataWrapper data = unmarshalFromXML(ORIGINAL_XML, BooksyDataWrapper.class);
+        BooksyDataWrapper data = unmarshalFromXML(ORIGINAL_XML);
         logData(data);
 
         marshalToXML(MARSHALED_XML, data);
     }
 
-    private static <T> void marshalToXML(File file, T object) {
-        if (object == null) {
+    private static void marshalToXML(File file, BooksyDataWrapper data) {
+        if (data == null) {
             logger.error("Skipping marshalling: No data available.");
             return;
         }
         try {
-            JAXBContext context = JAXBContext.newInstance(object.getClass());
+            JAXBContext context = JAXBContext.newInstance(data.getClass());
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(object, file);
+            marshaller.marshal(data, file);
             logger.info("Successfully saved XML to: " + file);
         } catch (JAXBException e) {
             logger.error("Marshalling failed for " + file, e);
         }
     }
 
-    private static <T> T unmarshalFromXML(File file, Class<T> classT ) {
+    private static BooksyDataWrapper unmarshalFromXML(File xmlFile) {
         try {
-            JAXBContext context = JAXBContext.newInstance(classT);
+            JAXBContext context = JAXBContext.newInstance(BooksyDataWrapper.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            return classT.cast(unmarshaller.unmarshal(file));
+            return (BooksyDataWrapper) unmarshaller.unmarshal(xmlFile);
         } catch (JAXBException e) {
-            logger.error("Unmarshalling failed for file: {}", file, e);
+            logger.error("Unmarshalling failed for file: {}", xmlFile, e);
             return null;
         }
     }
