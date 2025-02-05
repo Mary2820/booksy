@@ -1,11 +1,21 @@
 package com.solvd.booksyapp.models;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+
+@XmlRootElement(name = "procedure")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Procedure {
     private Long id;
     private Long categoryId;
     private String name;
     private String description;
     private Integer duration;
+
+    public Procedure() {}
 
     public Procedure(Long categoryId, String name, String description, Integer duration) {
         this.categoryId = categoryId;
@@ -14,45 +24,48 @@ public class Procedure {
         this.duration = duration;
     }
 
-    public Procedure() {}
-
+    @XmlAttribute(name = "id")
     public Long getId() {
         return id;
+    }
+
+    @XmlElement(name = "categoryId")
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    @XmlElement(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    @XmlElement(name = "duration")
+    public Integer getDuration() {
+        return duration;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

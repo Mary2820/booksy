@@ -27,7 +27,7 @@ public class Main {
         userService.getByRoleId(UserRole.EMPLOYEE.getId());
         userService.getByRoleId(UserRole.CLIENT.getId());
 
-        Employee employee = new Employee(5L, BigDecimal.valueOf(4.75), "nail master", worker.getId());
+        Employee employee = new Employee(5L, "nail master", BigDecimal.valueOf(4.75),  worker.getId());
 
         EmployeeService employeeService = new EmployeeService();
         employee = employeeService.create(employee);

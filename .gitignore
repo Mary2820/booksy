@@ -39,3 +39,4 @@ build/
 
 BeautyApp/.idea/
 BeautyApp/logs/
+BeautyApp/src/main/resources/xmlfiles/marshaled_data.xml

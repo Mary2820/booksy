@@ -1,11 +1,21 @@
 package com.solvd.booksyapp.models;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+
+@XmlRootElement(name = "business")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Business {
     private Long id;
     private String name;
     private String address;
     private String city;
     private String postcode;
+
+    public Business() {}
 
     public Business(String name, String address, String city, String postcode) {
         this.name = name;
@@ -14,42 +24,45 @@ public class Business {
         this.postcode = postcode;
     }
 
-    public Business() {}
-
+    @XmlAttribute(name = "id")
     public Long getId() {
         return id;
+    }
+
+    @XmlElement(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement(name = "address")
+    public String getAddress() {
+        return address;
+    }
+
+    @XmlElement(name = "city")
+    public String getCity() {
+        return city;
+    }
+
+    @XmlElement(name = "postcode")
+    public String getPostcode() {
+        return postcode;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getPostcode() {
-        return postcode;
     }
 
     public void setPostcode(String postcode) {

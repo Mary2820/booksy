@@ -1,5 +1,9 @@
 package com.solvd.booksyapp.models;
 
+import jakarta.xml.bind.annotation.*;
+
+@XmlRootElement(name = "user")
+@XmlAccessorType(XmlAccessType.NONE)
 public class User {
     private Long id;
     private String firstName;
@@ -21,56 +25,63 @@ public class User {
     public User() {
     }
 
+    @XmlAttribute(name = "id")
     public Long getId() {
         return id;
+    }
+
+    @XmlElement(name = "firstName")
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @XmlElement(name = "lastName")
+    public String getLastName() {
+        return lastName;
+    }
+
+    @XmlElement(name = "email")
+    public String getEmail() {
+        return email;
+    }
+
+    @XmlElement(name = "phone")
+    public String getPhone() {
+        return phone;
+    }
+
+    @XmlElement(name = "password")
+    public String getPassword() {
+        return password;
+    }
+
+    @XmlElement(name = "roleId")
+    public Long getRoleId() {
+        return roleId;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Long getRoleId() {
-        return roleId;
     }
 
     public void setRoleId(Long roleId) {

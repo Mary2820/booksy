@@ -1,7 +1,15 @@
 package com.solvd.booksyapp.models;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+
 import java.math.BigDecimal;
 
+@XmlRootElement(name = "employee")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Employee {
     private Long id;
     private Long userId;
@@ -9,50 +17,54 @@ public class Employee {
     private BigDecimal rating;
     private Long businessId;
 
-    public Employee(Long businessId, BigDecimal rating, String description, Long userId) {
-        this.businessId = businessId;
-        this.rating = rating;
-        this.description = description;
+    public Employee() {}
+
+    public Employee(Long userId, String description, BigDecimal rating, Long businessId) {
         this.userId = userId;
+        this.description = description;
+        this.rating = rating;
+        this.businessId = businessId;
     }
 
-    public Employee() {
-    }
-
+    @XmlAttribute(name = "id")
     public Long getId() {
         return id;
+    }
+
+    @XmlElement(name = "userId")
+    public Long getUserId() {
+        return userId;
+    }
+
+    @XmlElement(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    @XmlElement(name = "rating")
+    public BigDecimal getRating() {
+        return rating;
+    }
+
+    @XmlElement(name = "businessId")
+    public Long getBusinessId() {
+        return businessId;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public BigDecimal getRating() {
-        return rating;
-    }
-
     public void setRating(BigDecimal rating) {
         this.rating = rating;
-    }
-
-    public Long getBusinessId() {
-        return businessId;
     }
 
     public void setBusinessId(Long businessId) {
