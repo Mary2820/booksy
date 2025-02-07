@@ -1,5 +1,6 @@
 package com.solvd.booksyapp.models;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -8,6 +9,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 
 import java.math.BigDecimal;
 
+@JsonRootName(value = "employee")
 @XmlRootElement(name = "employee")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Employee {

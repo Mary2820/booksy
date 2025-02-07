@@ -1,5 +1,6 @@
 package com.solvd.booksyapp.models;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.jaxbdemo.adapters.LocalDateAdapter;
 import com.solvd.jaxbdemo.adapters.LocalDateTimeAdapter;
 import com.solvd.jaxbdemo.adapters.LocalTimeAdapter;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@JsonRootName(value = "appointment")
 @XmlRootElement(name = "appointment")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Appointment {

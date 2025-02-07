@@ -1,0 +1,51 @@
+{
+    "booksy_data": {
+        "users": [
+            {
+                "firstName": "Emily",
+                "lastName": "Davis",
+                "email": "eDavis@gmail.com",
+                "phone": "+48452345678",
+                "password": "fgjmkhfkmg6",
+                "roleId": "2"
+            }
+        ],
+        "businesses": [
+            {
+                "name": "Beauty Salon Charm",
+                "address": "ul. Klonowa 52",
+                "city": "Poznan",
+                "postcode": "60-005"
+            }
+        ],
+        "employees": [
+            {
+                "userId": "31",
+                "description": "Senior Hair Stylist with 10 years experience",
+                "rating": "4.8",
+                "businessId": "13"
+            }
+        ],
+        "procedures": [
+            {
+                "categoryId": "1",
+                "name": "Haircut and Styling",
+                "description": "Professional haircut with styling",
+                "duration": "60"
+            }
+        ],
+        "appointments": [
+            {
+                "clientId": "31",
+                "procedureId": "21",
+                "employeeId": "17",
+                "status": "confirmed",
+                "createdAt": "2024-02-04T10:30:00",
+                "date": "2024-02-10",
+                "dayOfWeek": "SATURDAY",
+                "startTime": "14:00:00",
+                "endTime": "15:00:00"
+            }
+        ]
+    }
+}

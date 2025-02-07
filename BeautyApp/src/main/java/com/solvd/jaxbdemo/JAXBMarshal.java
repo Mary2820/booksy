@@ -1,6 +1,6 @@
 package com.solvd.jaxbdemo;
 
-import com.solvd.jaxbdemo.wrappers.BooksyDataWrapper;
+import com.solvd.wrappers.BooksyDataWrapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -12,14 +12,14 @@ import java.io.File;
 
 public class JAXBMarshal {
     private static final Logger logger = LogManager.getLogger(JAXBMarshal.class.getName());
-    private static final File MARSHALED_XML = new File("src/main/resources/xmlfiles/marshaled_data.xml");
-    private static final File ORIGINAL_XML = new File("src/main/resources/xmlfiles/booksy_data.xml");
+    private static final File INPUT_PATH = new File("src/main/resources/xmlfiles/booksy_data.xml");
+    private static final File OUTPUT_PATH = new File("src/main/resources/xmlfiles/marshaled_data.xml");
 
     public static void main(String[] args) {
-        BooksyDataWrapper data = unmarshalFromXML(ORIGINAL_XML);
+        BooksyDataWrapper data = unmarshalFromXML(INPUT_PATH);
         logData(data);
 
-        marshalToXML(MARSHALED_XML, data);
+        marshalToXML(OUTPUT_PATH, data);
     }
 
     private static void marshalToXML(File file, BooksyDataWrapper data) {

@@ -1,7 +1,9 @@
 package com.solvd.booksyapp.models;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.xml.bind.annotation.*;
 
+@JsonRootName(value = "user")
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.NONE)
 public class User {

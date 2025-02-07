@@ -1,9 +1,11 @@
-package com.solvd.jaxbdemo.wrappers;
+package com.solvd.wrappers;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.booksyapp.models.*;
 import jakarta.xml.bind.annotation.*;
 import java.util.List;
 
+@JsonRootName("booksy_data")
 @XmlRootElement(name = "booksy_data")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BooksyDataWrapper {
