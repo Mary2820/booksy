@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IUserDAO">
+    <resultMap type="com.solvd.booksyapp.models.User" id="UserResultMap" autoMapping="false">
+        <id column="id" property="id"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <select id="getUserByFullName" resultMap="UserResultMap">
+        SELECT * FROM Users WHERE first_name = #{firstName} AND last_name = #{lastName}
+    </select>
+    <select id="getUserByEmail" resultMap="UserResultMap">
+        SELECT * FROM Users WHERE email = #{email}
+    </select>
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Users (first_name, last_name, email, phone, password, role_id) 
+        VALUES (#{firstName}, #{lastName}, #{email}, #{phone}, #{password}, #{roleId})
+    </insert>
+</mapper>
