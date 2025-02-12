@@ -1,10 +1,10 @@
-package com.solvd.jacksondemo;
+package com.solvd.booksyapp.utils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.solvd.wrappers.BooksyDataWrapper;
+import com.solvd.booksyapp.wrappers.BooksyDataWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

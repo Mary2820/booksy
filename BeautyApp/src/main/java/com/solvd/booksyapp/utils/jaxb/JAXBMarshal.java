@@ -1,6 +1,6 @@
-package com.solvd.jaxbdemo;
+package com.solvd.booksyapp.utils.jaxb;
 
-import com.solvd.wrappers.BooksyDataWrapper;
+import com.solvd.booksyapp.wrappers.BooksyDataWrapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;

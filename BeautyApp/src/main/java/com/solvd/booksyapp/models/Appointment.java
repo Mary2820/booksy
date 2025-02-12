@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.models;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.solvd.jaxbdemo.adapters.LocalDateAdapter;
-import com.solvd.jaxbdemo.adapters.LocalDateTimeAdapter;
-import com.solvd.jaxbdemo.adapters.LocalTimeAdapter;
+import com.solvd.booksyapp.utils.jaxb.adapters.LocalDateAdapter;
+import com.solvd.booksyapp.utils.jaxb.adapters.LocalDateTimeAdapter;
+import com.solvd.booksyapp.utils.jaxb.adapters.LocalTimeAdapter;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 

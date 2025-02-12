@@ -1,4 +1,4 @@
-package com.solvd.jaxbdemo.adapters;
+package com.solvd.booksyapp.utils.jaxb.adapters;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDateTime;

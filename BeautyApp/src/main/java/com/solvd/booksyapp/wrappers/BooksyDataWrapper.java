@@ -1,4 +1,4 @@
-package com.solvd.wrappers;
+package com.solvd.booksyapp.wrappers;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.booksyapp.models.*;

@@ -1,4 +1,4 @@
-package com.solvd.staxdemo;
+package com.solvd.booksyapp.utils.stax;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
