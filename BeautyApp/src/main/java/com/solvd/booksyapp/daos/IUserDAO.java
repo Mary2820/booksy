@@ -10,5 +10,4 @@ public interface IUserDAO extends IDAO<User> {
                            @Param("lastName") String lastName);
     User getUserByEmail(@Param("email") String email);
     List<User> getByRoleId(@Param("roleId") Long roleId);
-    User save(@Param("user") User user);
 }

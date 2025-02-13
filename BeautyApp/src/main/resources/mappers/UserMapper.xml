@@ -20,8 +20,30 @@
     <select id="getUserByEmail" resultMap="UserResultMap">
         SELECT * FROM Users WHERE email = #{email}
     </select>
+    <select id="getByRoleId" resultMap="UserResultMap">
+        SELECT * FROM Users WHERE role_id = #{roleId}
+    </select>
+    <select id="getById" resultMap="UserResultMap">
+        SELECT * FROM Users WHERE id = #{id}
+    </select>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Users (first_name, last_name, email, phone, password, role_id) 
         VALUES (#{firstName}, #{lastName}, #{email}, #{phone}, #{password}, #{roleId})
     </insert>
+
+    <update id="update">
+        UPDATE Users 
+        SET first_name = #{firstName}, 
+            last_name = #{lastName}, 
+            email = #{email}, 
+            phone = #{phone}, 
+            password = #{password}, 
+            role_id = #{roleId} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Users WHERE id = #{id}
+    </delete>
 </mapper>

@@ -18,31 +18,54 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User getUserByEmail(String email) {
-        return null;
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            return mapper.getUserByEmail(email);
+        }
     }
 
     @Override
     public List<User> getByRoleId(Long roleId) {
-        return null;
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            return mapper.getByRoleId(roleId);
+        }
     }
 
     @Override
     public User getById(Long id) {
-        return null;
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            return mapper.getById(id);
+        }
     }
 
     @Override
     public User save(User entity) {
-        return null;
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            mapper.save(entity);
+            session.commit();
+            return entity;
+        }
     }
 
     @Override
     public User update(User entity) {
-        return null;
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            mapper.update(entity);
+            session.commit();
+            return entity;
+        }
     }
 
     @Override
     public void removeById(Long id) {
-
+        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
+            IUserDAO mapper = session.getMapper(IUserDAO.class);
+            mapper.removeById(id);
+            session.commit();
+        }
     }
 }
