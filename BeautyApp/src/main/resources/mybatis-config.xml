@@ -20,5 +20,13 @@
 
     <mappers>
         <mapper resource="mappers/UserMapper.xml"/>
+        <mapper resource="mappers/AppointmentMapper.xml"/>
+        <mapper resource="mappers/BusinessMapper.xml"/>
+        <mapper resource="mappers/EmployeeMapper.xml"/>
+        <mapper resource="mappers/NotificationMapper.xml"/>
+        <mapper resource="mappers/OfferingMapper.xml"/>
+        <mapper resource="mappers/PaymentMapper.xml"/>
+        <mapper resource="mappers/ProcedureMapper.xml"/>
+        <mapper resource="mappers/ReviewMapper.xml"/>
     </mappers>
 </configuration>

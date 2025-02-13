@@ -35,17 +35,17 @@
         SELECT * FROM Employees WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Employees (user_id, description, rating, business_id) 
-        VALUES (#{userId}, #{description}, #{rating}, #{businessId})
+        VALUES (#{entity.userId}, #{entity.description}, #{entity.rating}, #{entity.businessId})
     </insert>
 
     <update id="update">
         UPDATE Employees 
-        SET description = #{description}, 
-            rating = #{rating}, 
-            business_id = #{businessId} 
-        WHERE id = #{id}
+        SET description = #{entity.description}, 
+            rating = #{entity.rating}, 
+            business_id = #{entity.businessId} 
+        WHERE id = #{entity.id}
     </update>
 
     <update id="updateRating">

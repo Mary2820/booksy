@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IBusinessDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.BusinessDAO;
 import com.solvd.booksyapp.models.Business;
 import com.solvd.booksyapp.services.IBusinessService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,11 @@ import java.util.List;
 
 public class BusinessService implements IBusinessService {
     private static final Logger logger = LogManager.getLogger(BusinessService.class.getName());
-    private IBusinessDAO businessDAO = new BusinessDAO();
+    private IBusinessDAO businessDAO;
+
+    public BusinessService() {
+        this.businessDAO = DAOFactory.getBusinessDAO();
+    }
 
     @Override
     public Business getById(Long id) {
@@ -66,7 +70,8 @@ public class BusinessService implements IBusinessService {
             throw new IllegalArgumentException("Business with this name already exists");
         }
 
-        Business savedBusiness = businessDAO.save(business);
+        businessDAO.save(business);
+        Business savedBusiness = businessDAO.getById(business.getId());
         if (savedBusiness != null) {
             logger.info("Successfully created business with ID: {}", savedBusiness.getId());
         } else {
@@ -93,7 +98,9 @@ public class BusinessService implements IBusinessService {
             }
         }
 
-        Business updatedBusiness = businessDAO.update(business);
+        businessDAO.update(business);
+        Business updatedBusiness = businessDAO.getById(business.getId());
+
         if (updatedBusiness != null) {
             logger.info("Successfully updated business with ID: {}", business.getId());
         } else {

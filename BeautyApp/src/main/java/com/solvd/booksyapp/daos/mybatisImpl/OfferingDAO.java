@@ -17,22 +17,20 @@ public class OfferingDAO implements IOfferingDAO {
     }
 
     @Override
-    public Offering save(Offering offering) {
+    public void save(Offering offering) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
             mapper.save(offering);
             session.commit();
-            return offering;
         }
     }
 
     @Override
-    public Offering updatePrice(Offering offering) {
+    public void updatePrice(Offering offering) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
             mapper.updatePrice(offering);
             session.commit();
-            return offering;
         }
     }
 

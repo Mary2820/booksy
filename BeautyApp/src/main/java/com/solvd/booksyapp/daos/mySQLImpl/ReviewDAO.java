@@ -140,7 +140,7 @@ public class ReviewDAO implements IReviewDAO {
     }
 
     @Override
-    public Review save(Review entity) {
+    public void save(Review entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -158,17 +158,15 @@ public class ReviewDAO implements IReviewDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving review {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Review update(Review entity) {
+    public void update(Review entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -181,14 +179,11 @@ public class ReviewDAO implements IReviewDAO {
             if (affectedRows == 0) {
                 throw new IllegalStateException("Update failed, no review found with id: " + entity.getId());
             }
-
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating review {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

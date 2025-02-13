@@ -103,7 +103,7 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
     }
 
     @Override
-    public User save(User entity) {
+    public void save(User entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -123,17 +123,15 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving user {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
-        }
-        return null;
+        };
     }
 
     @Override
-    public User update(User entity) {
+    public void update(User entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -151,13 +149,11 @@ public class UserDAO extends AbstractMySQLDAO implements IUserDAO {
                 throw new IllegalStateException("Update failed, no user found with id: " + entity.getId());
             }
 
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating user with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

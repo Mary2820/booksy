@@ -15,32 +15,37 @@
     </resultMap>
 
     <select id="getUserByFullName" resultMap="UserResultMap">
-        SELECT * FROM Users WHERE first_name = #{firstName} AND last_name = #{lastName}
+        SELECT * FROM Users 
+        WHERE first_name = #{firstName} AND last_name = #{lastName}
     </select>
+
     <select id="getUserByEmail" resultMap="UserResultMap">
         SELECT * FROM Users WHERE email = #{email}
     </select>
+
     <select id="getByRoleId" resultMap="UserResultMap">
         SELECT * FROM Users WHERE role_id = #{roleId}
     </select>
+
     <select id="getById" resultMap="UserResultMap">
         SELECT * FROM Users WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.solvd.booksyapp.models.User" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Users (first_name, last_name, email, phone, password, role_id) 
-        VALUES (#{firstName}, #{lastName}, #{email}, #{phone}, #{password}, #{roleId})
+        VALUES (#{entity.firstName}, #{entity.lastName}, #{entity.email}, 
+                #{entity.phone}, #{entity.password}, #{entity.roleId});
     </insert>
 
     <update id="update">
         UPDATE Users 
-        SET first_name = #{firstName}, 
-            last_name = #{lastName}, 
-            email = #{email}, 
-            phone = #{phone}, 
-            password = #{password}, 
-            role_id = #{roleId} 
-        WHERE id = #{id}
+        SET first_name = #{entity.firstName}, 
+            last_name = #{entity.lastName}, 
+            email = #{entity.email}, 
+            phone = #{entity.phone}, 
+            password = #{entity.password}, 
+            role_id = #{entity.roleId} 
+        WHERE id = #{entity.id}
     </update>
 
     <delete id="removeById">

@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface IOfferingDAO{
     Offering getByEmployeeIdAndProcedureId(@Param("employeeId") Long employeeId, @Param("procedureId") Long procedureId);
-    Offering save(@Param("offering") Offering offering);
-    Offering updatePrice(@Param("offering") Offering offering);
+    void save(@Param("offering") Offering offering);
+    void updatePrice(@Param("offering") Offering offering);
     void remove(@Param("employeeId") Long employeeId, @Param("procedureId") Long procedureId);
     List<Offering> getByEmployeeId(@Param("employeeId") Long employeeId);
     List<Offering> getByBusinessId(@Param("businessId") Long businessId);

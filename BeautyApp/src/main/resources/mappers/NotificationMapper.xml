@@ -27,17 +27,17 @@
         SELECT * FROM Notifications WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Notifications (message, appointment_id, status, created_at) 
-        VALUES (#{message}, #{appointmentId}, #{status}, #{createdAt})
+        VALUES (#{entity.message}, #{entity.appointmentId}, #{entity.status}, #{entity.createdAt})
     </insert>
 
     <update id="update">
         UPDATE Notifications 
-        SET message = #{message}, 
-            appointment_id = #{appointmentId}, 
-            status = #{status} 
-        WHERE id = #{id}
+        SET message = #{entity.message}, 
+            appointment_id = #{entity.appointmentId}, 
+            status = #{entity.status} 
+        WHERE id = #{entity.id}
     </update>
 
     <delete id="removeById">

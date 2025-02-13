@@ -23,22 +23,20 @@ public class PaymentDAO implements IPaymentDAO {
     }
 
     @Override
-    public Payment save(Payment entity) {
+    public void save(Payment entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Payment update(Payment entity) {
+    public void update(Payment entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

@@ -23,17 +23,17 @@
         SELECT * FROM Procedures WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Procedures (category_id, name, description, duration) 
-        VALUES (#{categoryId}, #{name}, #{description}, #{duration})
+        VALUES (#{entity.categoryId}, #{entity.name}, #{entity.description}, #{entity.duration})
     </insert>
 
     <update id="update">
         UPDATE Procedures 
-        SET name = #{name}, 
-            description = #{description}, 
-            duration = #{duration} 
-        WHERE id = #{id}
+        SET name = #{entity.name}, 
+            description = #{entity.description}, 
+            duration = #{entity.duration} 
+        WHERE id = #{entity.id}
     </update>
 
     <delete id="removeById">

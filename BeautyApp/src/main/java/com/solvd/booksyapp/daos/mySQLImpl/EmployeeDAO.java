@@ -166,7 +166,7 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Employee save(Employee entity) {
+    public void save(Employee entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -186,17 +186,15 @@ public class EmployeeDAO implements IEmployeeDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving employee {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Employee update(Employee entity) {
+    public void update(Employee entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -210,14 +208,11 @@ public class EmployeeDAO implements IEmployeeDAO {
             if (affectedRows == 0) {
                 throw new IllegalStateException("Update failed, no employee found with id: " + entity.getId());
             }
-
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating employee {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IOfferingDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.OfferingDAO;
 import com.solvd.booksyapp.models.Offering;
 import com.solvd.booksyapp.services.IOfferingService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,11 @@ import java.util.List;
 
 public class OfferingService implements IOfferingService {
     private static final Logger logger = LogManager.getLogger(OfferingService.class.getName());
-    private IOfferingDAO offeringDAO = new OfferingDAO();
+    private IOfferingDAO offeringDAO;
+
+    public OfferingService() {
+        this.offeringDAO = DAOFactory.getOfferingDAO();
+    }
 
     @Override
     public Offering getByEmployeeIdAndServiceId(Long employeeId, Long serviceId) {
@@ -33,7 +37,9 @@ public class OfferingService implements IOfferingService {
             throw new IllegalArgumentException("Offering already exists for this employee and service");
         }
 
-        Offering savedOffering = offeringDAO.save(offering);
+        offeringDAO.save(offering);
+
+        Offering savedOffering = offeringDAO.getByEmployeeIdAndProcedureId(offering.getEmployeeId(), offering.getProcedureId());
         if (savedOffering != null) {
             logger.info("Successfully created offering for employee ID: {} and service ID: {}", 
                 offering.getEmployeeId(), offering.getProcedureId());
@@ -53,7 +59,9 @@ public class OfferingService implements IOfferingService {
             throw new IllegalArgumentException("Offering not found");
         }
 
-        Offering updatedOffering = offeringDAO.updatePrice(offering);
+        offeringDAO.updatePrice(offering);
+        Offering updatedOffering = offeringDAO.getByEmployeeIdAndProcedureId(offering.getEmployeeId(), offering.getProcedureId());
+
         if (updatedOffering != null) {
             logger.info("Successfully updated offering price");
         } else {

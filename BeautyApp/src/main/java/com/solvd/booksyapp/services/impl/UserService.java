@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IUserDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.UserDAO;
 import com.solvd.booksyapp.models.User;
 import com.solvd.booksyapp.services.IUserService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,11 @@ import java.util.List;
 
 public class UserService implements IUserService {
     private static final Logger logger = LogManager.getLogger(UserService.class.getName());
-    private IUserDAO userDAO = new UserDAO();
+    private IUserDAO userDAO;
+
+    public UserService() {
+        this.userDAO = DAOFactory.getUserDAO();
+    }
 
     @Override
     public User getById(Long id) {
@@ -60,7 +64,8 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("User with this email already exists");
         }
 
-        User savedUser = userDAO.save(user);
+        userDAO.save(user);
+        User savedUser = userDAO.getUserByEmail(user.getEmail());
         if (savedUser != null) {
             logger.info("Successfully created user with ID: {}", savedUser.getId());
         } else {
@@ -77,8 +82,8 @@ public class UserService implements IUserService {
             logger.error("User with ID {} not found for update", user.getId());
             throw new IllegalArgumentException("User not found");
         }
-
-        User updatedUser = userDAO.update(user);
+        userDAO.update(user);
+        User updatedUser = userDAO.getUserByEmail(user.getEmail());
         if (updatedUser != null) {
             logger.info("Successfully updated user with ID: {}", user.getId());
         } else {

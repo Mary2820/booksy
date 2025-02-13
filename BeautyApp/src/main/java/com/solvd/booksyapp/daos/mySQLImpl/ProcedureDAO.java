@@ -81,7 +81,7 @@ public class ProcedureDAO implements IProcedureDAO {
     }
 
     @Override
-    public Procedure save(Procedure entity) {
+    public void save(Procedure entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -99,17 +99,15 @@ public class ProcedureDAO implements IProcedureDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving procedure {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Procedure update(Procedure entity) {
+    public void update(Procedure entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -124,13 +122,11 @@ public class ProcedureDAO implements IProcedureDAO {
                 throw new IllegalStateException("Update failed, no procedure found with id: " + entity.getId());
             }
 
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating procedure with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

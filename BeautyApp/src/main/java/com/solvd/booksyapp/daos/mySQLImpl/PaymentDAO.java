@@ -59,7 +59,7 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
     }
 
     @Override
-    public Payment save(Payment entity) {
+    public void save(Payment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -78,17 +78,15 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving payment {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Payment update(Payment entity) {
+    public void update(Payment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -104,13 +102,11 @@ public class PaymentDAO extends AbstractMySQLDAO implements IPaymentDAO {
                 throw new IllegalStateException("Update failed, no payment found with id: " + entity.getId());
             }
 
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating payment with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

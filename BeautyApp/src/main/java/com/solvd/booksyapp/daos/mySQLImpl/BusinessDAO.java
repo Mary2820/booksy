@@ -129,7 +129,7 @@ public class BusinessDAO implements IBusinessDAO {
     }
 
     @Override
-    public Business save(Business entity) {
+    public void save(Business entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -149,18 +149,16 @@ public class BusinessDAO implements IBusinessDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving business {} : {}", entity, ex);
         }
         finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Business update(Business entity) {
+    public void update(Business entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -176,14 +174,12 @@ public class BusinessDAO implements IBusinessDAO {
                 throw new IllegalStateException("Update failed, no business found with id: " + entity.getId());
             }
 
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating business {} : {}", entity, ex);
         }
         finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

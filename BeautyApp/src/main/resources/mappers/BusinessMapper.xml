@@ -31,18 +31,18 @@
         SELECT * FROM Businesses WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Businesses (name, address, city, postcode) 
-        VALUES (#{name}, #{address}, #{city}, #{postcode})
+        VALUES (#{entity.name}, #{entity.address}, #{entity.city}, #{entity.postcode})
     </insert>
 
     <update id="update">
         UPDATE Businesses 
-        SET name = #{name}, 
-            address = #{address}, 
-            city = #{city}, 
-            postcode = #{postcode} 
-        WHERE id = #{id}
+        SET name = #{entity.name}, 
+            address = #{entity.address}, 
+            city = #{entity.city}, 
+            postcode = #{entity.postcode} 
+        WHERE id = #{entity.id}
     </update>
 
     <delete id="removeById">

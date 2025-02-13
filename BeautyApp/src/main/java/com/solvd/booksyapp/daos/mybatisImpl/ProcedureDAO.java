@@ -33,22 +33,20 @@ public class ProcedureDAO implements IProcedureDAO {
     }
 
     @Override
-    public Procedure save(Procedure entity) {
+    public void save(Procedure entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Procedure update(Procedure entity) {
+    public void update(Procedure entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

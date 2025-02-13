@@ -10,5 +10,5 @@ public interface IAppointmentDAO extends IDAO<Appointment> {
     List<Appointment> getByClientId(@Param("clientId") Long clientId);
     List<Appointment> getByEmployeeId(@Param("employeeId") Long employeeId);
     List<Appointment> getByEmployeeIdAndDate(@Param("employeeId") Long employeeId,@Param("date") LocalDate date);
-    Appointment updateStatus(@Param("id") Long id,@Param("newStatus") String newStatus);
+    void updateStatus(@Param("id") Long id,@Param("newStatus") String newStatus);
 }

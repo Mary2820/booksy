@@ -87,7 +87,7 @@ public class NotificationDAO extends AbstractMySQLDAO implements INotificationDA
     }
 
     @Override
-    public Notification save(Notification entity) {
+    public void save(Notification entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -105,17 +105,15 @@ public class NotificationDAO extends AbstractMySQLDAO implements INotificationDA
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving notification {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Notification update(Notification entity) {
+    public void update(Notification entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -128,14 +126,11 @@ public class NotificationDAO extends AbstractMySQLDAO implements INotificationDA
             if (affectedRows == 0) {
                 throw new IllegalStateException("Update failed, no notification found with id: " + entity.getId());
             }
-
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating notification with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

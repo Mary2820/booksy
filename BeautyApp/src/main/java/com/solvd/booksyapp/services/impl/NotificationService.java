@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.INotificationDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.NotificationDAO;
 import com.solvd.booksyapp.models.Notification;
 import com.solvd.booksyapp.services.INotificationService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,11 @@ import java.util.List;
 
 public class NotificationService implements INotificationService {
     private static final Logger logger = LogManager.getLogger(NotificationService.class.getName());
-    private INotificationDAO notificationDAO = new NotificationDAO();
+    private INotificationDAO notificationDAO;
+
+    public NotificationService() {
+        this.notificationDAO = DAOFactory.getNotificationDAO();
+    }
 
     @Override
     public Notification getById(Long id) {
@@ -50,7 +54,9 @@ public class NotificationService implements INotificationService {
 
         notification.setCreatedAt(LocalDateTime.now());
 
-        Notification createdNotification = notificationDAO.save(notification);
+        notificationDAO.save(notification);
+        Notification createdNotification = notificationDAO.getById(notification.getId());
+
         if (createdNotification != null) {
             logger.info("Successfully created notification with ID: {}", createdNotification.getId());
         } else {
@@ -68,7 +74,9 @@ public class NotificationService implements INotificationService {
             throw new IllegalArgumentException("Notification not found");
         }
 
-        Notification updatedNotification = notificationDAO.update(notification);
+        notificationDAO.update(notification);
+        Notification updatedNotification = notificationDAO.getById(notification.getId());
+
         if (updatedNotification != null) {
             logger.info("Successfully updated notification with ID: {}", notification.getId());
         } else {

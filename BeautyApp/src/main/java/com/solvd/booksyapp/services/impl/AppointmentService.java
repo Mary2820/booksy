@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IAppointmentDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.AppointmentDAO;
 import com.solvd.booksyapp.models.Appointment;
 import com.solvd.booksyapp.services.IAppointmentService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +14,11 @@ import java.util.Objects;
 
 public class AppointmentService implements IAppointmentService {
     private static final Logger logger = LogManager.getLogger(AppointmentService.class.getName());
-    private IAppointmentDAO appointmentDAO = new AppointmentDAO();
+    private IAppointmentDAO appointmentDAO;
+
+    public AppointmentService() {
+        this.appointmentDAO = DAOFactory.getAppointmentDAO();
+    }
 
     @Override
     public Appointment getById(Long id) {
@@ -68,7 +72,9 @@ public class AppointmentService implements IAppointmentService {
             }
         }
 
-        Appointment savedAppointment = appointmentDAO.save(appointment);
+        appointmentDAO.save(appointment);
+        Appointment savedAppointment = appointmentDAO.getById(appointment.getId());
+
         if (savedAppointment != null) {
             logger.info("Successfully created appointment with ID: {}", savedAppointment.getId());
         } else {
@@ -86,7 +92,9 @@ public class AppointmentService implements IAppointmentService {
             throw new IllegalArgumentException("Appointment not found");
         }
 
-        Appointment updatedAppointment = appointmentDAO.update(appointment);
+        appointmentDAO.update(appointment);
+        Appointment updatedAppointment = appointmentDAO.getById(appointment.getId());
+
         if (updatedAppointment != null) {
             logger.info("Successfully updated appointment with ID: {}", appointment.getId());
         } else {
@@ -104,7 +112,8 @@ public class AppointmentService implements IAppointmentService {
             throw new IllegalArgumentException("Appointment not found");
         }
 
-        Appointment updatedAppointment = appointmentDAO.updateStatus(id, newStatus);
+        appointmentDAO.updateStatus(id, newStatus);
+        Appointment updatedAppointment = appointmentDAO.getById(id);
         if (Objects.equals(updatedAppointment.getStatus(), newStatus)) {
             logger.info("Successfully updated status for appointment ID: {}", id);
         } else {

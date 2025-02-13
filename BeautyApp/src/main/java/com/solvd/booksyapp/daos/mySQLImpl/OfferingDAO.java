@@ -108,7 +108,7 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
     }
 
     @Override
-    public Offering save(Offering entity) {
+    public void save(Offering entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -119,18 +119,15 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Saving offering failed, no rows affected.");
             }
-
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving offering {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Offering updatePrice(Offering offering) {
+    public void updatePrice(Offering offering) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try(PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -142,15 +139,12 @@ public class OfferingDAO extends AbstractMySQLDAO implements IOfferingDAO {
             if (affectedRows == 0) {
                 throw new IllegalStateException("Update failed, no offering found");
             }
-
-            return offering;
         } catch (SQLException ex) {
             logger.error("Error updating offering with employee id {} and procedure id {} : {}",
                     offering.getEmployeeId(), offering.getProcedureId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

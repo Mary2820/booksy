@@ -49,22 +49,20 @@ public class BusinessDAO implements IBusinessDAO {
     }
 
     @Override
-    public Business save(Business entity) {
+    public void save(Business entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Business update(Business entity) {
+    public void update(Business entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

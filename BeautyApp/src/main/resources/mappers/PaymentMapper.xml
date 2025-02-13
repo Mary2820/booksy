@@ -19,18 +19,18 @@
         SELECT * FROM Payments WHERE id = #{id}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="entity.id">
         INSERT INTO Payments (appointment_id, amount, payment_date, status) 
-        VALUES (#{appointmentId}, #{amount}, #{paymentDate}, #{status})
+        VALUES (#{entity.appointmentId}, #{entity.amount}, #{entity.paymentDate}, #{entity.status})
     </insert>
 
     <update id="update">
         UPDATE Payments 
-        SET appointment_id = #{appointmentId}, 
-            amount = #{amount}, 
-            payment_date = #{paymentDate}, 
-            status = #{status} 
-        WHERE id = #{id}
+        SET appointment_id = #{entity.appointmentId}, 
+            amount = #{entity.amount}, 
+            payment_date = #{entity.paymentDate}, 
+            status = #{entity.status} 
+        WHERE id = #{entity.id}
     </update>
 
     <delete id="removeById">

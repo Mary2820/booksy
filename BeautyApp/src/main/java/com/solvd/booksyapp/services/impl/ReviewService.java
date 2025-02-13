@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IReviewDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.ReviewDAO;
 import com.solvd.booksyapp.models.Review;
 import com.solvd.booksyapp.services.IReviewService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +13,11 @@ import java.util.List;
 
 public class ReviewService implements IReviewService {
     private static final Logger logger = LogManager.getLogger(ReviewService.class.getName());
-    private IReviewDAO reviewDAO = new ReviewDAO();
+    private IReviewDAO reviewDAO;
+
+    public ReviewService() {
+        this.reviewDAO = DAOFactory.getReviewDAO();
+    }
 
     @Override
     public Review getById(Long id) {
@@ -59,7 +63,8 @@ public class ReviewService implements IReviewService {
 
         review.setCreatedAt(LocalDateTime.now());
 
-        Review savedReview = reviewDAO.save(review);
+        reviewDAO.save(review);
+        Review savedReview = reviewDAO.getById(review.getId());
         if (savedReview != null) {
             logger.info("Successfully created review with ID: {}", savedReview.getId());
         } else {
@@ -76,8 +81,8 @@ public class ReviewService implements IReviewService {
             logger.error("Review with ID {} not found for update", review.getId());
             throw new IllegalArgumentException("Review not found");
         }
-
-        Review updatedReview = reviewDAO.update(review);
+        reviewDAO.update(review);
+        Review updatedReview = reviewDAO.getById(review.getId());
         if (updatedReview != null) {
             logger.info("Successfully updated review with ID: {}", review.getId());
         } else {

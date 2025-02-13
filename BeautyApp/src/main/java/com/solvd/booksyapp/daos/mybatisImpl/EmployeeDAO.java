@@ -68,22 +68,20 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Employee save(Employee entity) {
+    public void save(Employee entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IEmployeeDAO mapper = session.getMapper(IEmployeeDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Employee update(Employee entity) {
+    public void update(Employee entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IEmployeeDAO mapper = session.getMapper(IEmployeeDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

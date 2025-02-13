@@ -1,15 +1,19 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IPaymentDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.PaymentDAO;
 import com.solvd.booksyapp.models.Payment;
 import com.solvd.booksyapp.services.IPaymentService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PaymentService implements IPaymentService {
     private static final Logger logger = LogManager.getLogger(PaymentService.class.getName());
-    private IPaymentDAO paymentDAO = new PaymentDAO();
+    private IPaymentDAO paymentDAO;
+
+    public PaymentService() {
+        this.paymentDAO = DAOFactory.getPaymentDAO();
+    }
 
     @Override
     public Payment getById(Long id) {
@@ -34,8 +38,8 @@ public class PaymentService implements IPaymentService {
     @Override
     public Payment create(Payment payment) {
         logger.info("Creating new payment for appointment ID: {}", payment.getAppointmentId());
-        
-        Payment savedPayment = paymentDAO.save(payment);
+        paymentDAO.save(payment);
+        Payment savedPayment = paymentDAO.getById(payment.getId());
         if (savedPayment != null) {
             logger.info("Successfully created payment with ID: {}", savedPayment.getId());
         } else {
@@ -53,7 +57,9 @@ public class PaymentService implements IPaymentService {
             throw new IllegalArgumentException("Payment not found");
         }
 
-        Payment updatedPayment = paymentDAO.update(payment);
+        paymentDAO.update(payment);
+        Payment updatedPayment = paymentDAO.getById(payment.getId());
+
         if (updatedPayment != null) {
             logger.info("Successfully updated payment with ID: {}", payment.getId());
         } else {

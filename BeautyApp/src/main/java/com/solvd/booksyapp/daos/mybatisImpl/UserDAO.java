@@ -41,22 +41,20 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public User save(User entity) {
+    public void save(User entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IUserDAO mapper = session.getMapper(IUserDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public User update(User entity) {
+    public void update(User entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IUserDAO mapper = session.getMapper(IUserDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

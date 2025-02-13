@@ -50,22 +50,20 @@ public class ReviewDAO implements IReviewDAO {
     }
 
     @Override
-    public Review save(Review entity) {
+    public void save(Review entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IReviewDAO mapper = session.getMapper(IReviewDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Review update(Review entity) {
+    public void update(Review entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IReviewDAO mapper = session.getMapper(IReviewDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

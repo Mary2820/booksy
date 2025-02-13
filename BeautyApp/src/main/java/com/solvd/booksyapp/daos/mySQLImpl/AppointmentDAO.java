@@ -91,7 +91,7 @@ public class AppointmentDAO implements IAppointmentDAO {
     }
 
     @Override
-    public Appointment updateStatus(Long id, String newStatus) {
+    public void updateStatus(Long id, String newStatus) {
         Connection connection = ConnectionPool.getInstance().getConnection();
         
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_STATUS)) {
@@ -102,14 +102,11 @@ public class AppointmentDAO implements IAppointmentDAO {
             if (affectedRows == 0) {
                 throw new IllegalStateException("Updating status failed, no appointment found with ID: " + id);
             }
-
-            return getById(id);
         } catch (SQLException ex) {
             logger.error("Error updating status for appointment with ID {} : {}", id, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
@@ -134,7 +131,7 @@ public class AppointmentDAO implements IAppointmentDAO {
     }
 
     @Override
-    public Appointment save(Appointment entity) {
+    public void save(Appointment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
@@ -157,17 +154,15 @@ public class AppointmentDAO implements IAppointmentDAO {
                     entity.setId(generatedKeys.getLong(1));
                 }
             }
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error saving appointment {} : {}", entity, ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override
-    public Appointment update(Appointment entity) {
+    public void update(Appointment entity) {
         Connection connection = ConnectionPool.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(UPDATE)) {
@@ -182,14 +177,11 @@ public class AppointmentDAO implements IAppointmentDAO {
             if (affectedRows == 0) {
                 throw new IllegalStateException("Update failed, no appointment found with id: " + entity.getId());
             }
-
-            return entity;
         } catch (SQLException ex) {
             logger.error("Error updating appointment with id {}: {}", entity.getId(), ex);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
-        return null;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IEmployeeDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.EmployeeDAO;
 import com.solvd.booksyapp.models.Employee;
 import com.solvd.booksyapp.services.IEmployeeService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,11 @@ import java.util.List;
 
 public class EmployeeService implements IEmployeeService {
     private static final Logger logger = LogManager.getLogger(EmployeeService.class.getName());
-    private IEmployeeDAO employeeDAO = new EmployeeDAO();
+    private IEmployeeDAO employeeDAO;
+
+    public EmployeeService() {
+        this.employeeDAO = DAOFactory.getEmployeeDAO();
+    }
 
     @Override
     public Employee getById(Long id) {
@@ -33,7 +37,9 @@ public class EmployeeService implements IEmployeeService {
             throw new IllegalArgumentException("Employee with this user id already exists");
         }
 
-        Employee savedEmployee = employeeDAO.save(employee);
+        employeeDAO.save(employee);
+        Employee savedEmployee = employeeDAO.getById(employee.getId());
+
         if (savedEmployee != null) {
             logger.info("Successfully created employee with ID: {}", savedEmployee.getId());
         } else {
@@ -51,7 +57,9 @@ public class EmployeeService implements IEmployeeService {
             throw new IllegalArgumentException("Employee not found");
         }
 
-        Employee updatedEmployee = employeeDAO.update(employee);
+        employeeDAO.update(employee);
+        Employee updatedEmployee = employeeDAO.getById(employee.getId());
+
         if (updatedEmployee != null) {
             logger.info("Successfully updated employee with ID: {}", employee.getId());
         } else {

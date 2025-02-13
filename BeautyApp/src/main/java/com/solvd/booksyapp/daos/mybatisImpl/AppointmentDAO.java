@@ -34,12 +34,11 @@ public class AppointmentDAO implements IAppointmentDAO {
     }
 
     @Override
-    public Appointment updateStatus(Long id, String status) {
+    public void updateStatus(Long id, String status) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
             mapper.updateStatus(id, status);
             session.commit();
-            return mapper.getById(id);
         }
     }
 
@@ -52,22 +51,20 @@ public class AppointmentDAO implements IAppointmentDAO {
     }
 
     @Override
-    public Appointment save(Appointment entity) {
+    public void save(Appointment entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
             mapper.save(entity);
             session.commit();
-            return entity;
         }
     }
 
     @Override
-    public Appointment update(Appointment entity) {
+    public void update(Appointment entity) {
         try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
             IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
             mapper.update(entity);
             session.commit();
-            return entity;
         }
     }
 

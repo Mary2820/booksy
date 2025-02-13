@@ -1,9 +1,9 @@
 package com.solvd.booksyapp.services.impl;
 
 import com.solvd.booksyapp.daos.IProcedureDAO;
-import com.solvd.booksyapp.daos.mySQLImpl.ProcedureDAO;
 import com.solvd.booksyapp.models.Procedure;
 import com.solvd.booksyapp.services.IProcedureService;
+import com.solvd.booksyapp.utils.DAOFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,11 @@ import java.util.List;
 
 public class ProcedureService implements IProcedureService {
     private static final Logger logger = LogManager.getLogger(ProcedureService.class.getName());
-    private IProcedureDAO procedureDAO = new ProcedureDAO();
+    private IProcedureDAO procedureDAO;
+
+    public ProcedureService() {
+        this.procedureDAO = DAOFactory.getProcedureDAO();
+    }
 
     @Override
     public Procedure getById(Long id) {
@@ -44,8 +48,8 @@ public class ProcedureService implements IProcedureService {
     @Override
     public Procedure create(Procedure procedure) {
         logger.info("Creating new procedure with name: {}", procedure.getName());
-        
-        Procedure savedProcedure = procedureDAO.save(procedure);
+        procedureDAO.save(procedure);
+        Procedure savedProcedure = procedureDAO.getById(procedure.getId());
         if (savedProcedure != null) {
             logger.info("Successfully created procedure with ID: {}", savedProcedure.getId());
         } else {
@@ -62,8 +66,9 @@ public class ProcedureService implements IProcedureService {
             logger.error("Procedure with ID {} not found for update", procedure.getId());
             throw new IllegalArgumentException("Procedure not found");
         }
+        procedureDAO.update(procedure);
 
-        Procedure updatedProcedure = procedureDAO.update(procedure);
+        Procedure updatedProcedure = procedureDAO.getById(procedure.getId());
         if (updatedProcedure != null) {
             logger.info("Successfully updated procedure with ID: {}", procedure.getId());
         } else {
