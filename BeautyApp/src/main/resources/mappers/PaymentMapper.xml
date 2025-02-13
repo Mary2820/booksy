@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IPaymentDAO">
+    <resultMap type="com.solvd.booksyapp.models.Payment" id="PaymentResultMap" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="appointmentId" column="appointment_id"/>
+        <result property="amount" column="amount"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="getByAppointmentId" resultMap="PaymentResultMap">
+        SELECT * FROM Payments WHERE appointment_id = #{appointmentId}
+    </select>
+
+    <select id="getById" resultMap="PaymentResultMap">
+        SELECT * FROM Payments WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Payments (appointment_id, amount, payment_date, status) 
+        VALUES (#{appointmentId}, #{amount}, #{paymentDate}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE Payments 
+        SET appointment_id = #{appointmentId}, 
+            amount = #{amount}, 
+            payment_date = #{paymentDate}, 
+            status = #{status} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Payments WHERE id = #{id}
+    </delete>
+</mapper> 

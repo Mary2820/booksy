@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IReviewDAO">
+    <resultMap type="com.solvd.booksyapp.models.Review" id="ReviewResultMap" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="appointmentId" column="appointment_id"/>
+        <result property="rating" column="rating"/>
+        <result property="comment" column="comment"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="getByClientId" resultMap="ReviewResultMap">
+        SELECT * FROM Reviews r 
+        LEFT JOIN Appointments a ON r.appointment_id = a.id 
+        WHERE a.client_id = #{clientId}
+    </select>
+
+    <select id="getByEmployeeId" resultMap="ReviewResultMap">
+        SELECT * FROM Reviews r 
+        LEFT JOIN Appointments a ON r.appointment_id = a.id 
+        WHERE a.employee_id = #{employeeId}
+    </select>
+
+    <select id="getAverageRatingByEmployeeId" resultType="java.math.BigDecimal">
+        SELECT COALESCE(AVG(r.rating), 0) AS average_rating 
+        FROM Reviews r 
+        LEFT JOIN Appointments a ON r.appointment_id = a.id 
+        WHERE a.employee_id = #{employeeId}
+    </select>
+
+    <select id="getAverageRatingByBusinessId" resultType="java.math.BigDecimal">
+        SELECT COALESCE(AVG(r.rating), 0) AS average_rating 
+        FROM Reviews r 
+        LEFT JOIN Appointments a ON r.appointment_id = a.id 
+        LEFT JOIN Employees e ON a.employee_id = e.id 
+        WHERE e.business_id = #{businessId}
+    </select>
+
+    <select id="getById" resultMap="ReviewResultMap">
+        SELECT * FROM Reviews WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Reviews (appointment_id, rating, comment, created_at) 
+        VALUES (#{appointmentId}, #{rating}, #{comment}, #{createdAt})
+    </insert>
+
+    <update id="update">
+        UPDATE Reviews 
+        SET rating = #{rating}, 
+            comment = #{comment} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Reviews WHERE id = #{id}
+    </delete>
+</mapper> 

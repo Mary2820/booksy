@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IEmployeeDAO">
+    <resultMap type="com.solvd.booksyapp.models.Employee" id="EmployeeResultMap" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="description" column="description"/>
+        <result property="rating" column="rating"/>
+        <result property="businessId" column="business_id"/>
+    </resultMap>
+
+    <select id="getEmployeesByBusinessId" resultMap="EmployeeResultMap">
+        SELECT * FROM Employees WHERE business_id = #{businessId}
+    </select>
+
+    <select id="getByUserId" resultMap="EmployeeResultMap">
+        SELECT * FROM Employees WHERE user_id = #{userId}
+    </select>
+
+    <select id="getByRatingAbove" resultMap="EmployeeResultMap">
+        SELECT * FROM Employees WHERE rating > #{rating}
+    </select>
+
+    <select id="getByRatingRange" resultMap="EmployeeResultMap">
+        SELECT * FROM Employees WHERE rating BETWEEN #{minRating} AND #{maxRating}
+    </select>
+
+    <select id="countByBusinessId" resultType="int">
+        SELECT COUNT(*) FROM Employees WHERE business_id = #{businessId}
+    </select>
+
+    <select id="getById" resultMap="EmployeeResultMap">
+        SELECT * FROM Employees WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Employees (user_id, description, rating, business_id) 
+        VALUES (#{userId}, #{description}, #{rating}, #{businessId})
+    </insert>
+
+    <update id="update">
+        UPDATE Employees 
+        SET description = #{description}, 
+            rating = #{rating}, 
+            business_id = #{businessId} 
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateRating">
+        UPDATE Employees SET rating = #{rating} WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Employees WHERE id = #{id}
+    </delete>
+</mapper> 

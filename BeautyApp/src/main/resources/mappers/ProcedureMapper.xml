@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IProcedureDAO">
+    <resultMap type="com.solvd.booksyapp.models.Procedure" id="ProcedureResultMap" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="duration" column="duration"/>
+    </resultMap>
+
+    <select id="getByCategoryId" resultMap="ProcedureResultMap">
+        SELECT * FROM Procedures WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="getByName" resultMap="ProcedureResultMap">
+        SELECT * FROM Procedures WHERE name = #{name}
+    </select>
+
+    <select id="getById" resultMap="ProcedureResultMap">
+        SELECT * FROM Procedures WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Procedures (category_id, name, description, duration) 
+        VALUES (#{categoryId}, #{name}, #{description}, #{duration})
+    </insert>
+
+    <update id="update">
+        UPDATE Procedures 
+        SET name = #{name}, 
+            description = #{description}, 
+            duration = #{duration} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Procedures WHERE id = #{id}
+    </delete>
+</mapper> 

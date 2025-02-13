@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IBusinessDAO">
+    <resultMap type="com.solvd.booksyapp.models.Business" id="BusinessResultMap" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="city" column="city"/>
+        <result property="postcode" column="postcode"/>
+    </resultMap>
+
+    <select id="getByName" resultMap="BusinessResultMap">
+        SELECT * FROM Businesses WHERE name = #{name}
+    </select>
+
+    <select id="getByCity" resultMap="BusinessResultMap">
+        SELECT * FROM Businesses WHERE city = #{city}
+    </select>
+
+    <select id="getByPostCode" resultMap="BusinessResultMap">
+        SELECT * FROM Businesses WHERE postcode = #{postcode}
+    </select>
+
+    <select id="countByCity"  resultType="int">
+        SELECT COUNT(*) FROM Businesses WHERE city = #{city}
+    </select>
+
+    <select id="getById" resultMap="BusinessResultMap">
+        SELECT * FROM Businesses WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Businesses (name, address, city, postcode) 
+        VALUES (#{name}, #{address}, #{city}, #{postcode})
+    </insert>
+
+    <update id="update">
+        UPDATE Businesses 
+        SET name = #{name}, 
+            address = #{address}, 
+            city = #{city}, 
+            postcode = #{postcode} 
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Businesses WHERE id = #{id}
+    </delete>
+</mapper> 
