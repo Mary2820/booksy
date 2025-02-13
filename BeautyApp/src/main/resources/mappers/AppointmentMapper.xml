@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.booksyapp.daos.IAppointmentDAO">
+    <resultMap type="com.solvd.booksyapp.models.Appointment" id="AppointmentResultMap" autoMapping="false">
+        <id column="id" property="id"/>
+        <result column="client_id" property="clientId"/>
+        <result column="procedure_id" property="procedureId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="date" property="date"/>
+        <result column="day_of_week" property="dayOfWeek"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+    </resultMap>
+
+    <select id="getByClientId" resultMap="AppointmentResultMap">
+        SELECT * FROM Appointments WHERE client_id = #{clientId}
+    </select>
+
+    <select id="getByEmployeeId" resultMap="AppointmentResultMap">
+        SELECT * FROM Appointments WHERE employee_id = #{employeeId}
+    </select>
+
+    <select id="getByEmployeeIdAndDate" resultMap="AppointmentResultMap">
+        SELECT * FROM Appointments WHERE employee_id = #{employeeId} AND date = #{date}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE Appointments SET status = #{newStatus} WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultMap="AppointmentResultMap">
+        SELECT * FROM Appointments WHERE id = #{id}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Appointments (client_id, procedure_id, employee_id, status, created_at,
+            date, day_of_week, start_time, end_time) 
+        VALUES (#{entity.clientId}, #{entity.procedureId}, #{entity.employeeId}, 
+                #{entity.status}, #{entity.createdAt}, #{entity.date}, 
+                #{entity.dayOfWeek}, #{entity.startTime}, #{entity.endTime})
+    </insert>
+
+    <update id="update">
+        UPDATE Appointments 
+        SET status = #{entity.status}, 
+            date = #{entity.date}, 
+            day_of_week = #{entity.dayOfWeek}, 
+            start_time = #{entity.startTime}, 
+            end_time = #{entity.endTime} 
+        WHERE id = #{entity.id}
+    </update>
+
+    <delete id="removeById">
+        DELETE FROM Appointments WHERE id = #{id}
+    </delete>
+</mapper>
