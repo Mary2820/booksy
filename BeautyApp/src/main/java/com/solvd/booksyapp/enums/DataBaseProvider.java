@@ -1,4 +1,4 @@
-package com.solvd.booksyapp.utils;
+package com.solvd.booksyapp.enums;
 
 public enum DataBaseProvider{
     MYBATIS,
