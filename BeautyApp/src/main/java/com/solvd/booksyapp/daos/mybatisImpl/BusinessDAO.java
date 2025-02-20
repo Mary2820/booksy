@@ -2,76 +2,52 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IBusinessDAO;
 import com.solvd.booksyapp.models.Business;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
-public class BusinessDAO implements IBusinessDAO {
+public class BusinessDAO extends AbstractMyBatisDAO<IBusinessDAO> implements IBusinessDAO {
     @Override
     public Business getByName(String name) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            return mapper.getByName(name);
-        }
+        return executeInSession(mapper -> mapper.getByName(name));
     }
 
     @Override
     public List<Business> getByCity(String city) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            return mapper.getByCity(city);
-        }
+        return executeInSession(mapper -> mapper.getByCity(city));
     }
 
     @Override
     public List<Business> getByPostCode(String postcode) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            return mapper.getByPostCode(postcode);
-        }
+        return executeInSession(mapper -> mapper.getByPostCode(postcode));
     }
 
     @Override
     public int countByCity(String city) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            return mapper.countByCity(city);
-        }
+        return executeInSession(mapper -> mapper.countByCity(city));
     }
 
     @Override
     public Business getById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            return mapper.getById(id);
-        }
+        return executeInSession(mapper -> mapper.getById(id));
     }
 
     @Override
     public void save(Business entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            mapper.save(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(entity));
     }
 
     @Override
     public void update(Business entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            mapper.update(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.update(entity));
     }
 
     @Override
     public void removeById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IBusinessDAO mapper = session.getMapper(IBusinessDAO.class);
-            mapper.removeById(id);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.removeById(id));
     }
-} 
+
+    @Override
+    protected Class<IBusinessDAO> getMapperClass() {
+        return IBusinessDAO.class;
+    }
+}

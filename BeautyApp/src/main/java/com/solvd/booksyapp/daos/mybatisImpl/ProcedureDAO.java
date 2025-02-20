@@ -2,60 +2,42 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IProcedureDAO;
 import com.solvd.booksyapp.models.Procedure;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
-public class ProcedureDAO implements IProcedureDAO {
+public class ProcedureDAO extends AbstractMyBatisDAO<IProcedureDAO> implements IProcedureDAO {
     @Override
     public List<Procedure> getByCategoryId(Long categoryId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            return mapper.getByCategoryId(categoryId);
-        }
+        return executeInSession(mapper -> mapper.getByCategoryId(categoryId));
     }
 
     @Override
     public Procedure getByName(String name) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            return mapper.getByName(name);
-        }
+        return executeInSession(mapper -> mapper.getByName(name));
     }
 
     @Override
     public Procedure getById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            return mapper.getById(id);
-        }
+        return executeInSession(mapper -> mapper.getById(id));
     }
 
     @Override
     public void save(Procedure entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            mapper.save(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(entity));
     }
 
     @Override
     public void update(Procedure entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            mapper.update(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.update(entity));
     }
 
     @Override
     public void removeById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IProcedureDAO mapper = session.getMapper(IProcedureDAO.class);
-            mapper.removeById(id);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.removeById(id));
+    }
+
+    @Override
+    protected Class<IProcedureDAO> getMapperClass() {
+        return IProcedureDAO.class;
     }
 } 

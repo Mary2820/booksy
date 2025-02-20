@@ -2,68 +2,47 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IOfferingDAO;
 import com.solvd.booksyapp.models.Offering;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
-public class OfferingDAO implements IOfferingDAO {
+public class OfferingDAO extends AbstractMyBatisDAO<IOfferingDAO> implements IOfferingDAO {
     @Override
     public Offering getByEmployeeIdAndProcedureId(Long employeeId, Long procedureId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            return mapper.getByEmployeeIdAndProcedureId(employeeId, procedureId);
-        }
+        return executeInSession(mapper -> mapper.getByEmployeeIdAndProcedureId(employeeId, procedureId));
     }
 
     @Override
     public void save(Offering offering) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            mapper.save(offering);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(offering));
     }
 
     @Override
     public void updatePrice(Offering offering) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            mapper.updatePrice(offering);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.updatePrice(offering));
     }
 
     @Override
     public void remove(Long employeeId, Long procedureId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            mapper.remove(employeeId, procedureId);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.remove(employeeId, procedureId));
     }
 
     @Override
     public List<Offering> getByEmployeeId(Long employeeId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            return mapper.getByEmployeeId(employeeId);
-        }
+        return executeInSession(mapper -> mapper.getByEmployeeId(employeeId));
     }
 
     @Override
     public List<Offering> getByBusinessId(Long businessId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            return mapper.getByBusinessId(businessId);
-        }
+        return executeInSession(mapper -> mapper.getByBusinessId(businessId));
     }
 
     @Override
     public List<Offering> getByProcedureId(Long procedureId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IOfferingDAO mapper = session.getMapper(IOfferingDAO.class);
-            return mapper.getByProcedureId(procedureId);
-        }
+        return executeInSession(mapper -> mapper.getByProcedureId(procedureId));
+    }
+
+    @Override
+    protected Class<IOfferingDAO> getMapperClass() {
+        return IOfferingDAO.class;
     }
 } 

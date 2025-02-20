@@ -2,77 +2,53 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IReviewDAO;
 import com.solvd.booksyapp.models.Review;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ReviewDAO implements IReviewDAO {
+public class ReviewDAO extends AbstractMyBatisDAO<IReviewDAO> implements IReviewDAO {
     @Override
     public List<Review> getByClientId(Long clientId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            return mapper.getByClientId(clientId);
-        }
+        return executeInSession(mapper -> mapper.getByClientId(clientId));
     }
 
     @Override
     public List<Review> getByEmployeeId(Long employeeId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            return mapper.getByEmployeeId(employeeId);
-        }
+        return executeInSession(mapper -> mapper.getByEmployeeId(employeeId));
     }
 
     @Override
     public BigDecimal getAverageRatingByEmployeeId(Long employeeId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            return mapper.getAverageRatingByEmployeeId(employeeId);
-        }
+        return executeInSession(mapper -> mapper.getAverageRatingByEmployeeId(employeeId));
     }
 
     @Override
     public BigDecimal getAverageRatingByBusinessId(Long businessId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            return mapper.getAverageRatingByBusinessId(businessId);
-        }
+        return executeInSession(mapper -> mapper.getAverageRatingByBusinessId(businessId));
     }
 
     @Override
     public Review getById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            return mapper.getById(id);
-        }
+        return executeInSession(mapper -> mapper.getById(id));
     }
 
     @Override
     public void save(Review entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            mapper.save(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(entity));
     }
 
     @Override
     public void update(Review entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            mapper.update(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.update(entity));
     }
 
     @Override
     public void removeById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IReviewDAO mapper = session.getMapper(IReviewDAO.class);
-            mapper.removeById(id);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.removeById(id));
+    }
+
+    @Override
+    protected Class<IReviewDAO> getMapperClass() {
+        return IReviewDAO.class;
     }
 } 

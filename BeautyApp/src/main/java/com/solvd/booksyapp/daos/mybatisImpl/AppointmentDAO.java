@@ -2,78 +2,53 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IAppointmentDAO;
 import com.solvd.booksyapp.models.Appointment;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class AppointmentDAO implements IAppointmentDAO {
+public class AppointmentDAO extends AbstractMyBatisDAO<IAppointmentDAO> implements IAppointmentDAO {
     @Override
     public List<Appointment> getByClientId(Long clientId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            return mapper.getByClientId(clientId);
-        }
+        return executeInSession(mapper -> mapper.getByClientId(clientId));
     }
 
     @Override
     public List<Appointment> getByEmployeeId(Long employeeId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            return mapper.getByEmployeeId(employeeId);
-        }
+        return executeInSession(mapper -> mapper.getByEmployeeId(employeeId));
     }
 
     @Override
     public List<Appointment> getByEmployeeIdAndDate(Long employeeId, LocalDate date) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            return mapper.getByEmployeeIdAndDate(employeeId, date);
-        }
+        return executeInSession(mapper -> mapper.getByEmployeeIdAndDate(employeeId, date));
     }
 
     @Override
     public void updateStatus(Long id, String status) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            mapper.updateStatus(id, status);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.updateStatus(id, status));
     }
 
     @Override
     public Appointment getById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            return mapper.getById(id);
-        }
+        return executeInSession(mapper -> mapper.getById(id));
     }
 
     @Override
     public void save(Appointment entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            mapper.save(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(entity));
     }
 
     @Override
     public void update(Appointment entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            mapper.update(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.update(entity));
     }
 
     @Override
     public void removeById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IAppointmentDAO mapper = session.getMapper(IAppointmentDAO.class);
-            mapper.removeById(id);
-            session.commit();
-        }
+        executeInSessionVoid(mapper ->mapper.removeById(id));
+    }
+
+    @Override
+    protected Class<IAppointmentDAO> getMapperClass() {
+        return IAppointmentDAO.class;
     }
 }

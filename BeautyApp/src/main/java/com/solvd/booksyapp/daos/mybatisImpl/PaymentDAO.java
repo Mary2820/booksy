@@ -2,50 +2,35 @@ package com.solvd.booksyapp.daos.mybatisImpl;
 
 import com.solvd.booksyapp.daos.IPaymentDAO;
 import com.solvd.booksyapp.models.Payment;
-import com.solvd.booksyapp.utils.ConnectionFactory;
-import org.apache.ibatis.session.SqlSession;
 
-public class PaymentDAO implements IPaymentDAO {
+public class PaymentDAO extends AbstractMyBatisDAO<IPaymentDAO> implements IPaymentDAO {
     @Override
     public Payment getByAppointmentId(Long appointmentId) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
-            return mapper.getByAppointmentId(appointmentId);
-        }
+        return executeInSession(mapper -> mapper.getByAppointmentId(appointmentId));
     }
 
     @Override
     public Payment getById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
-            return mapper.getById(id);
-        }
+        return executeInSession(mapper -> mapper.getById(id));
     }
 
     @Override
     public void save(Payment entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
-            mapper.save(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.save(entity));
     }
 
     @Override
     public void update(Payment entity) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
-            mapper.update(entity);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.update(entity));
     }
 
     @Override
     public void removeById(Long id) {
-        try (SqlSession session = ConnectionFactory.getSQLSessionFactory().openSession()) {
-            IPaymentDAO mapper = session.getMapper(IPaymentDAO.class);
-            mapper.removeById(id);
-            session.commit();
-        }
+        executeInSessionVoid(mapper -> mapper.removeById(id));
+    }
+
+    @Override
+    protected Class<IPaymentDAO> getMapperClass() {
+        return IPaymentDAO.class;
     }
 } 
