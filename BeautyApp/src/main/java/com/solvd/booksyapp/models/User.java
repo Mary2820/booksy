@@ -2,6 +2,7 @@ package com.solvd.booksyapp.models;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.xml.bind.annotation.*;
+import com.solvd.booksyapp.models.builders.UserBuilder;
 
 @JsonRootName(value = "user")
 @XmlRootElement(name = "user")
@@ -15,7 +16,8 @@ public class User {
     private String password;
     private Long roleId;
 
-    public User(String firstName, String lastName, String email, String phone, String password, Long roleId) {
+    public User(Long id, String firstName, String lastName, String email, String phone, String password, Long roleId) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

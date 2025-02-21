@@ -3,6 +3,7 @@ package com.solvd.booksyapp;
 import com.solvd.booksyapp.enums.AppointmentStatus;
 import com.solvd.booksyapp.enums.UserRole;
 import com.solvd.booksyapp.models.*;
+import com.solvd.booksyapp.models.builders.UserBuilder;
 import com.solvd.booksyapp.services.impl.*;
 
 import java.math.BigDecimal;
@@ -17,8 +18,11 @@ public class Main {
         userService.getByEmail("sDoray@gmail.com");
         userService.getByRoleId(UserRole.CLIENT.getId());
 
-        User user = userService.getById(2L);
-        user.setPassword("dflijbcobj");
+        User user = new UserBuilder()
+                .firstName("Sarah")
+                .lastName("Jonson")
+                .phone("+48741")
+                .build();
 
         userService.update(user);
 
